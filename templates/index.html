@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chatRoom</title>
+    <link rel="stylesheet" href="../static/css/chatRoom.css">
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container blur">
+        <div class="wrapper">
+            <div class="left-panel">
+                <div class="left-title">
+                    <div class="head-img"></div>
+                    <div class="user-ip">10.197.24.79</div>
+                    <div class="user-info">最近上线时间：2023-06-25 09:12:34</div>
+                </div>
+                <div class="left-chatList">
+                    <div class="item-box">
+                        <div class="chat-item-main chat-selected">
+                            <div class="chat-title">Junior 的聊天室</div>
+                            <div class="chat-bottom">
+                                <div class="chat-time">2023-06-29 09:45</div>
+                                <div class="chat-num">9999条对话</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="left-addChat">
+                    <button class="contact">
+                        <span class="btn-text">联系管理员</span>
+                        <i class="btn-img cantact-img"></i>
+                    </button>
+                    <button class="new-chat">
+                        <span class="btn-text">添加聊天</span>
+                        <i class="btn-img new-chat-img"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="right-panel">
+                <div class="right-title">
+                    ChatRoom
+                </div>
+                <div class="right-chatRoom"></div>
+                <div class="right-sendMessage">
+                    <div class="change-radio">
+                        <input type="radio" id="text-message" name="message-change" value="text-message" checked>
+                        <label for="text-message" class="radio-text">文字</label>
+                        <input type="radio" id="file-message" name="message-change" value="file-message">
+                        <label for="file-message" class="radio-text">文件</label>
+                    </div>
+                    <div class="message-container">
+                        <div class="wrapper message-input-background">
+                            <input type="text" class="text-input" placeholder="输入文字聊天内容">
+                            <div class="send-img"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="model">
+        <div class="model-title">新的聊天</div>
+        <div class="model-content">
+            <input type="text" class="model-input">
+        </div>
+        <div class="model-option">
+            <button class="model-btn add">加入</button>
+            <button class="model-btn create">创建</button>
+        </div>
+    </div>
+<script src="../static/js/jquery-3.6.0.min.js"></script>
+<script src="../static/js/chatRoom.js"></script>
+</body>
+</html>
