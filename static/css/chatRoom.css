@@ -242,12 +242,11 @@ body {
 
 .right-chatRoom {
     width: 100%;
-    height: 477px;
+    flex-grow: 1;
 }
 
 .right-sendMessage {
     width: 100%;
-    height: 93px;
 }
 
 .change-radio {
@@ -265,16 +264,19 @@ body {
 
 .message-container {
     width: 664px;
-    height: 53px;
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
 }
 
-.message-input-background {
+.message-input {
+    align-items: center;
     background-color: #ffffffb3;
     border-radius: 12px;
-
+    padding-top: 16px;
+    padding-left: 24px;
+    padding-bottom: 16px;
+    width: 640px;
 }
 
 .text-input {
@@ -284,14 +286,11 @@ body {
     font-size: 14px;
     font-family: "Microsoft YaHei UI";
     font-weight: 500;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    padding-top: 16px;
-    padding-left: 24px;
-    padding-bottom: 16px;
     border: none;
     background: none;
     outline: none;
+    resize: none;
+    padding: 0;
 }
 
 .send-img {
@@ -300,8 +299,7 @@ body {
     background-image: url("../img/send.png");
     background-repeat: no-repeat;
     background-size: cover;
-    margin-top: 12px;
-    margin-left: 3px;
+    margin-left: 2px;
     cursor: pointer;
 }
 

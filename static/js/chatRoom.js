@@ -93,3 +93,16 @@ $('.create').click(function () {
     hiddenModel();
     addChat()
 });
+
+let textarea = document.querySelector('.text-input')
+$('.text-input').on('input', function () {
+
+    let _scrollHeight = textarea.scrollHeight;
+    // 最大显示五行
+    if (_scrollHeight / 21 <= 5){
+        textarea.style.height = `${_scrollHeight}px`;
+    }else {
+        textarea.style.height = `105px`;
+    }
+
+});
