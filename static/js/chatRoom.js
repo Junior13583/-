@@ -94,9 +94,8 @@ $('.create').click(function () {
     addChat()
 });
 
-let textarea = document.querySelector('.text-input')
-$('.text-input').on('input', function () {
-
+function changeTextarea(dom) {
+    let textarea = document.querySelector(dom)
     let _scrollHeight = textarea.scrollHeight;
     // 最大显示五行
     if (_scrollHeight / 21 <= 5){
@@ -104,5 +103,8 @@ $('.text-input').on('input', function () {
     }else {
         textarea.style.height = `105px`;
     }
+}
 
+$('.text-input').on('input', function () {
+    changeTextarea('.text-input')
 });

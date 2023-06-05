@@ -245,6 +245,31 @@ body {
     flex-grow: 1;
 }
 
+.bubble-left{
+    position: relative;
+    width: 265px;
+    height: 82px;
+    margin-left: 24px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    background-color: #ffffffd6;
+    padding: 16px;
+}
+
+.bubble-text{
+    width: 590px;
+    height: 21px;
+    line-height: 21px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    border: none;
+    background: none;
+    outline: none;
+    resize: none;
+    padding: 0;
+}
+
 .right-sendMessage {
     width: 100%;
 }
