@@ -1,0 +1,376 @@
+body {
+    background-image: url("../img/6739.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.overlay {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.5); /* 遮罩层颜色 */
+    height: 100vh;
+    width: 100%;
+}
+
+.container {
+    width: 1024px;
+    height: 640px;
+    border-radius: 20px; /* 圆角 */
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.blur {
+    backdrop-filter: blur(10px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.left-panel {
+    width: 320px;
+    background-color: #fff0f066;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.left-title {
+    width: 100%;
+    height: 90px;
+    border-bottom: 1px solid #a5a5a5ed;
+}
+
+.head-img{
+    width: 64px;
+    height: 64px;
+    background-image: url("../img/head.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    margin-top: 13px;
+    margin-left: 24px;
+}
+
+.user-ip{
+    margin-left: 96px;
+    margin-top: -42px;
+    font-size: 18px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 800;
+}
+
+.user-info{
+    margin-left: 96px;
+    margin-top: 3px;
+    font-size: 12px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+}
+
+.left-chatList {
+    width: 100%;
+    height: 488px;
+    border-bottom: 1px solid #a5a5a5ed;
+}
+
+.item-box {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 100%;
+    padding-top: 22px;
+    overflow: auto;
+    max-height: 466px;
+}
+
+.chat-item-main {
+    width: 265px;
+    height: 82px;
+    margin-left: 24px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    background-color: #ffffff7d;
+    cursor: pointer;
+}
+
+.chat-item {
+    width: 265px;
+    height: 82px;
+    margin-left: 24px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    background-color: #ffffff7d;
+    cursor: pointer;
+}
+
+.chat-selected{
+    box-shadow: 0 0 10px rgb(0 0 0 / 43%);
+}
+
+.chat-del{
+    visibility: hidden;
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    margin-left: 247px;
+    margin-top: -10px;
+    background-image: url(../img/del.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.chat-title{
+    width: 233px;
+    margin-left: 16px;
+    margin-top: 16px;
+    font-size: 17px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 800;
+}
+
+.chat-bottom{
+    width: 248px;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 17px;
+}
+
+.chat-time {
+    margin-left: 16px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Microsoft YaHei UI";
+}
+
+.chat-num{
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Microsoft YaHei UI";
+}
+
+.left-addChat {
+    width: 100%;
+    height: 60px;
+}
+
+.contact {
+    height: 32px;
+    width: 118px;
+    margin-left: 24px;
+    margin-top: 13px;
+    background-color: #ffffffb3;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-text{
+    margin-left: 20px;
+}
+
+.btn-img{
+    width: 18px;
+    height: 18px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: block;
+    margin-top: -18px;
+    margin-left: 5px;
+}
+
+.cantact-img{
+    background-image: url("../img/Contact.png");
+}
+
+.new-chat-img{
+    background-image: url("../img/add-chat.png");
+}
+
+.new-chat{
+    position: absolute;
+    height: 32px;
+    width: 100px;
+    margin-left: 52px;
+    margin-top: 13px;
+    background-color: #ffffffb3;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.right-panel {
+    width: 704px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-title {
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Microsoft YaHei UI";
+    text-align: center;
+    /*border-bottom: 1px solid #a5a5a5ed;*/
+}
+
+.right-chatRoom {
+    width: 100%;
+    height: 477px;
+}
+
+.right-sendMessage {
+    width: 100%;
+    height: 93px;
+}
+
+.change-radio {
+    width: 664px;
+    height: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.radio-text {
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+}
+
+.message-container {
+    width: 664px;
+    height: 53px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+.message-input-background {
+    background-color: #ffffffb3;
+    border-radius: 12px;
+
+}
+
+.text-input {
+    width: 590px;
+    height: 21px;
+    line-height: 21px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding-top: 16px;
+    padding-left: 24px;
+    padding-bottom: 16px;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+.send-img {
+    width: 28px;
+    height: 28px;
+    background-image: url("../img/send.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 12px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.model{
+    z-index: 2;
+    visibility: hidden;
+    width: 400px;
+    height: 255px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border-radius: 12px;
+}
+
+.model-title {
+    width: 400px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 17px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 800;
+}
+
+.model-content {
+    width: 400px;
+    height: 120px;
+}
+
+.model-input{
+    width: 300px;
+    height: 60px;
+    border-radius: 12px;
+    font-size: 18px;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-left: 25px;
+    margin-top: 19px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.model-option {
+    width: 400px;
+    height: 50px;
+}
+
+.model-btn {
+    width: 125px;
+    height: 36px;
+    margin-left: 50px;
+    border-radius: 10px;
+    font-size: 16px;
+    border: none;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.add{
+    background: #5362ff;
+}
+
+.create{
+    background: #15af28;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+}
