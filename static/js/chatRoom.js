@@ -10,17 +10,20 @@ $(document).on('mouseleave', '.chat-item', function () {
     $(this).find('.chat-del').css('visibility', 'hidden');
 });
 
-function selectChatRoom(chatTitle) {
+function selectChatRoom(selectDom) {
+    $('.chat-selected').removeClass('chat-selected');
+    $(selectDom).addClass('chat-selected');
+    let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
 }
 
-$(document).on('click', '.chat-item', function () {
-    $('.chat-selected').removeClass('chat-selected');
-    $(this).addClass('chat-selected');
-    let chatTitle = $(this).find('.chat-title').text();
-    // TODO 请求后台获取聊天信息
-    selectChatRoom(chatTitle)
+$(document).on('click', '.chat-item-main', function () {
+    selectChatRoom(this)
+});
+
+$(document).on('click', '.chat-item',function () {
+    selectChatRoom(this)
 });
 
 function delChatRoom(isCreate, dom) {
