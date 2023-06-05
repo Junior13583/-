@@ -247,17 +247,30 @@ body {
 
 .bubble-left{
     position: relative;
-    width: 265px;
-    height: 82px;
     margin-left: 24px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    background-color: #ffffffd6;
     padding: 16px;
 }
 
+.bubble-user{
+    height: 21px;
+    line-height: 21px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
+}
+
+.bubble-info-box{
+    display: flex;
+}
+
+.bubble-info{
+    background-color: #ffffffd6;
+    border-radius: 10px;
+    padding: 10px;
+}
+
 .bubble-text{
-    width: 590px;
+    width: auto;
     height: 21px;
     line-height: 21px;
     font-size: 14px;

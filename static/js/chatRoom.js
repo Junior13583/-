@@ -108,3 +108,23 @@ function changeTextarea(dom) {
 $('.text-input').on('input', function () {
     changeTextarea('.text-input')
 });
+
+$('.send-img').click(function () {
+    let flag = 'text';
+    if (flag === 'text') {
+        let sendMsg = $('.text-input').val();
+        let longest = sendMsg.split("\n").reduce(function (a, b) {
+            return a.length > b.length ? a : b;
+        });
+        let maxLength = longest.length * 14;
+        if (maxLength <= 450) {
+            $('.bubble-text').css('width', `${maxLength}px`);
+        } else {
+            $('.bubble-text').css('width', `450px`);
+        }
+        $('.bubble-text').val(sendMsg);
+        changeTextarea('.bubble-text');
+    }
+
+});
+
