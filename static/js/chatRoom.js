@@ -250,6 +250,7 @@ function sendMsg() {
     $('.text-input').val('');
     drawBubble('end', 'right', user, sendMsg, sendType, isFail)
     // todo 向websocket发送请求
+    ws.send(sendMsg);
     // 发消息后滚动到最底部
     $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
 }
@@ -285,14 +286,43 @@ $('.right-chatRoom').scroll(function () {
     let res = msgArray.reverse();
     if ($(this).scrollTop() === 0) {
         // 添加前滚动条长度
-        let beforeScrollLength = $(this)[0].scrollHeight;
+        let beforeScrollLength = $(this).prop('scrollHeight');
         for (let i = 0; i<res.length; i++) {
             drawBubble(res[i].horizontal, res[i].vertical, res[i].user, res[i].sendMsg, res[i].sendType, res[i].isFail)
         }
         // 添加后滚动条长度
-        let afterScrollLength = $(this)[0].scrollHeight;
+        let afterScrollLength = $(this).prop('scrollHeight');
         // 将滚动条滚动到没添加前的位置
         $(this).scrollTop(afterScrollLength - beforeScrollLength)
     }
 });
 
+// 模拟接受websocket消息
+function acceptMsg(res) {
+
+    // 添加前滚动条位置
+    let beforeScrollLength = $('.right-chatRoom').scrollTop();
+    // 绘制聊天气泡
+    drawBubble('end', 'left', 'ws服务器', res, 'text', true)
+    // 添加后滚动条长度
+    let afterScrollLength = $('.right-chatRoom').prop('scrollHeight');
+    // 滚动范围较小将聚焦到底部
+    if (afterScrollLength - beforeScrollLength < 1000) {
+        $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+    }
+
+
+}
+
+
+var ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
+ws.onopen = function(evt){
+    console.log("on open");
+}
+ws.onclose = function(evt){
+    console.log("on close");
+}
+ws.onmessage = function(evt){
+    acceptMsg(evt.data)
+    console.log(evt.data);
+}
