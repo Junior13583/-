@@ -94,6 +94,82 @@ $('.create').click(function () {
     addChat()
 });
 
+$('#text-message').on('change', function () {
+    if ($('#text-message').prop('checked')) {
+        // 更改发送按钮属性
+        $('.send-img').removeClass('file');
+        $('.send-img').addClass('text');
+        // 更改发送框
+        $('.file-input').remove();
+        $('.message-input').prepend(`<textarea class="text-input" placeholder="输入文字聊天内容(Ctrl+Enter 换行)"></textarea>`)
+    }
+
+});
+
+$('#file-message').on('change', function () {
+    if ($('#file-message').prop('checked')) {
+        // 更改发送按钮属性
+        $('.send-img').removeClass('text');
+        $('.send-img').addClass('file');
+        // 更改发送框
+        $('.text-input').remove();
+        $('.message-input').prepend(`<div class="file-input"></div>`)
+    }
+
+});
+
+$('.right-panel').on("dragenter", function (event) {
+    event.preventDefault();
+
+});
+
+$('.right-panel').on("dragover", function (event) {
+    event.preventDefault();
+    $('.left-overlay').css('display', 'block');
+    // 判断radio是否处于选中状态
+    if ($('#text-message').prop('checked')) {
+        $('#text-message').prop('checked', false);
+        $('#file-message').prop('checked', true);
+        // // 更改发送按钮属性
+        $('.send-img').removeClass('text');
+        $('.send-img').addClass('file');
+        // 更改发送框
+        $('.text-input').remove();
+        $('.message-input').prepend(`<div class="file-input">
+                                                <div class="file-item">
+                                                    <img src="../img/unknow.png" alt="文件测试" class="file-preview">
+                                                    <span class="file-name"></span>
+                                                </div>
+                                            </div>`)
+    }
+});
+
+$('.right-panel').on("dragleave", function () {
+    $('.left-overlay').css('display', 'none');
+});
+
+$('.right-panel').on("drop", function (event) {
+    event.preventDefault();
+
+    var files = event.originalEvent.dataTransfer.files;
+    if (files && files.length > 0) {
+        var file = files[0];
+
+        if (file.type.indexOf("image") === 0) {
+            var reader = new FileReader();
+
+            reader.onload = function (event) {
+                previewImg.attr("src", event.target.result);
+                previewWrapper.show();
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    $('.left-overlay').css('display', 'none');
+});
+
 /**
 *
 * @param dom:  元素的class或者id
@@ -255,8 +331,17 @@ function sendMsg() {
     $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
 }
 
+function sendFile() {
+}
+
 $('.send-img').click(function () {
-    sendMsg();
+    // 发送文字
+    if ($(this).hasClass('text')) {
+        sendMsg();
+    // 发送文件
+    }else if ($(this).hasClass('file')) {
+        sendFile();
+    }
 });
 
 $(document).on("keydown", "textarea", function(e) {

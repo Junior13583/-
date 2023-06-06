@@ -9,7 +9,7 @@ body {
 .overlay {
     position: relative;
     background-color: rgba(0, 0, 0, 0.5); /* 遮罩层颜色 */
-    height: 100vh;
+    height: 100%;
     width: 100%;
 }
 
@@ -41,6 +41,18 @@ body {
     border-bottom-left-radius: 20px;
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+.left-overlay {
+    position: absolute;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* 遮罩层颜色 */
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    display: none;
 }
 
 .left-title {
@@ -227,6 +239,7 @@ body {
     border-bottom-right-radius: 20px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .right-title {
@@ -348,6 +361,30 @@ body {
     outline: none;
     resize: none;
     padding: 0;
+}
+
+.file-input {
+    width: 590px;
+    height: 105px;
+    display: flex;
+    border: 2px dashed gray;
+}
+
+.file-item {
+    position: relative;
+}
+
+.file-preview {
+    width: 86px;
+    height: 86px;
+}
+
+.file-name {
+    height: 21px;
+    line-height: 21px;
+    font-size: 14px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 500;
 }
 
 .send-img {
