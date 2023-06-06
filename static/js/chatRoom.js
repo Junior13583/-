@@ -114,13 +114,52 @@ $('.text-input').on('input', function () {
     changeTextareaHeight('.text-input')
 });
 
-function drawBubble(user, sendMsg, sendType, isFail) {
-    $('.bubble-user').text(user)
-    if (sendType === 'text') {
-        $('.bubble-text').text(sendMsg);
-    }else if (sendType === 'file') {
+function drawBubble(direction, user, sendMsg, sendType, isFail) {
+    let $rightChatRoom = $('.right-chatRoom')
+    // 气泡在左边显示
+    if (direction === 'left') {
+        // 文字气泡
+        if (sendType === 'text') {
+            $rightChatRoom.append(`<div class="bubble">
+                                        <div class="bubble-user-box">
+                                            <span class="bubble-user">${user}</span>
+                                        </div>
+                                        <div class="bubble-info-box">
+                                            <div class="bubble-info">
+                                                <span class="bubble-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>`)
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+        // 文件气泡
+        }else if (sendType === 'file') {
 
+        }
+    // 气泡在右边显示
+    }else if (direction === 'right') {
+        // 文字气泡
+        if (sendType === 'text') {
+            $rightChatRoom.append(`<div class="bubble">
+                                        <div class="bubble-user-box-right">
+                                            <span class="bubble-user">${user}</span>
+                                        </div>
+                                        <div class="bubble-info-box-right">
+                                            <div class="bubble-info-right">
+                                                <span class="bubble-text"></span>
+                                            </div>
+                                        </div>
+                                    </div>`)
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+            // 文件气泡
+        }else if (sendType === 'file') {
+
+        }
     }
+
 }
 
 $('.send-img').click(function () {
@@ -128,6 +167,6 @@ $('.send-img').click(function () {
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
     let isFail = true;
-    drawBubble(user, sendMsg, sendType, isFail)
+    drawBubble('right', user, sendMsg, sendType, isFail)
 });
 
