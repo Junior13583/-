@@ -94,6 +94,13 @@ $('.create').click(function () {
     addChat()
 });
 
+/**
+*
+* @param dom:  元素的class或者id
+* @return:
+* @Author: Junior
+* @Date: 2023/6/6
+*/
 function changeTextareaHeight(dom) {
     let textarea = document.querySelector(dom)
     let _scrollHeight = textarea.scrollHeight;
@@ -235,16 +242,40 @@ function drawBubble(horizontal, vertical, user, sendMsg, sendType, isFail) {
 
 }
 
-$('.send-img').click(function () {
+function sendMsg() {
     let user = '10.197.24.79';
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
     let isFail = true;
+    $('.text-input').val('');
     drawBubble('end', 'right', user, sendMsg, sendType, isFail)
+    // todo 向websocket发送请求
+    // 发消息后滚动到最底部
+    $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+}
 
+$('.send-img').click(function () {
+    sendMsg();
+});
+
+$(document).on("keydown", "textarea", function(e) {
+    // 取消默认回车换行改为消息发送，添加Ctrl+Enter组合键换行
+    if ((e.keyCode === 13 && e.ctrlKey) || (e.keyCode === 13 && e.metaKey)) {
+        e.preventDefault();
+        var value = $(this).val();
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        $(this).val(value.slice(0, start) + "\n" + value.slice(end));
+        this.selectionStart = this.selectionEnd = start + 1;
+        changeTextareaHeight('.text-input');
+    }else if (e.keyCode === 13) {
+        e.preventDefault();
+        sendMsg();
+    }
 });
 
 $('.right-chatRoom').scroll(function () {
+    // todo 向后台拉取历史消息
     let msgArray = new Array();
     msgArray.push({horizontal: 'head',vertical: 'left', user: '10.197.24.79',  sendMsg: '我房里有些好康的！', sendType: 'text', isFail: true})
     msgArray.push({horizontal: 'head',vertical: 'right', user: '10.197.24.79', sendMsg: '开玩笑，我超勇的好不好！', sendType: 'text', isFail: true})
