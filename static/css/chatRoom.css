@@ -270,17 +270,13 @@ body {
 }
 
 .bubble-text{
-    width: auto;
-    height: 21px;
+    max-width: 450px;
     line-height: 21px;
     font-size: 14px;
     font-family: "Microsoft YaHei UI";
     font-weight: 500;
-    border: none;
-    background: none;
-    outline: none;
-    resize: none;
-    padding: 0;
+    white-space: pre-wrap;
+    display: inline-block;
 }
 
 .right-sendMessage {

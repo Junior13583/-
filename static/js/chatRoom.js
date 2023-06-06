@@ -94,37 +94,40 @@ $('.create').click(function () {
     addChat()
 });
 
-function changeTextarea(dom) {
+function changeTextareaHeight(dom) {
     let textarea = document.querySelector(dom)
     let _scrollHeight = textarea.scrollHeight;
-    // 最大显示五行
-    if (_scrollHeight / 21 <= 5){
+    if (dom === '.text-input') {
+        // 最大显示五行
+        if (_scrollHeight / 21 <= 5){
+            textarea.style.height = `${_scrollHeight}px`;
+        }else {
+            textarea.style.height = `105px`;
+        }
+    }else if (dom === '.bubble-text') {
         textarea.style.height = `${_scrollHeight}px`;
-    }else {
-        textarea.style.height = `105px`;
     }
+
 }
 
 $('.text-input').on('input', function () {
-    changeTextarea('.text-input')
+    changeTextareaHeight('.text-input')
 });
 
-$('.send-img').click(function () {
-    let flag = 'text';
-    if (flag === 'text') {
-        let sendMsg = $('.text-input').val();
-        let longest = sendMsg.split("\n").reduce(function (a, b) {
-            return a.length > b.length ? a : b;
-        });
-        let maxLength = longest.length * 14;
-        if (maxLength <= 450) {
-            $('.bubble-text').css('width', `${maxLength}px`);
-        } else {
-            $('.bubble-text').css('width', `450px`);
-        }
-        $('.bubble-text').val(sendMsg);
-        changeTextarea('.bubble-text');
-    }
+function drawBubble(user, sendMsg, sendType, isFail) {
+    $('.bubble-user').text(user)
+    if (sendType === 'text') {
+        $('.bubble-text').text(sendMsg);
+    }else if (sendType === 'file') {
 
+    }
+}
+
+$('.send-img').click(function () {
+    let user = '10.197.24.79';
+    let sendType = 'text';
+    let sendMsg = $('.text-input').val();
+    let isFail = true;
+    drawBubble(user, sendMsg, sendType, isFail)
 });
 
