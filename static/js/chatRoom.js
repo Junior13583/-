@@ -420,10 +420,10 @@ function sendFile() {
 
 function send() {
     // 发送文字
-    if ($(this).hasClass('text')) {
+    if ($('.send-img').hasClass('text')) {
         sendMsg();
         // 发送文件
-    }else if ($(this).hasClass('file')) {
+    }else if ($('.send-img').hasClass('file')) {
         sendFile();
     }
 }
