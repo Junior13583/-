@@ -1,5 +1,7 @@
 var textInput;
 var fileInput = `<div class="file-input"></div>`;
+// 全局文件数组，保存用户添加的文件
+var fileArray = new Array();
 
 $('.contact').click(function () {
     window.open('https://www.doruo.cn/s/leaving', '_blank');
@@ -150,10 +152,28 @@ $('.right-panel').on("dragleave", function () {
 $('.right-panel').on("drop", function (event) {
     event.preventDefault();
 
-    var files = event.originalEvent.dataTransfer.files;
-    if (files && files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-            var file = files[i];
+    const files = Array.from(event.originalEvent.dataTransfer.files);
+    // 定义一个数组来存储不重复的文件
+    const uniqueFiles = [];
+    // 遍历文件列表，将不重复的文件添加到 uniqueFiles 中
+    files.forEach(file => {
+        if (!uniqueFiles.find(f => f.name === file.name && f.size === file.size)) {
+            uniqueFiles.push(file);
+        }
+    });
+    const finalFiles = []
+    // 遍历不重复文件数组，将已经添加过的文件从中去除
+    uniqueFiles.forEach(file => {
+        if (!fileArray.find(f => f.name === file.name && f.size === file.size)) {
+            finalFiles.push(file)
+        }
+    });
+
+    if (finalFiles && finalFiles.length > 0) {
+        for (let i = 0; i < finalFiles.length; i++) {
+            var file = finalFiles[i];
+            // 将文件添加到全局数组中
+            fileArray.push(file)
             var reader = new FileReader();
             // 处理图片类文件
             if (file.type.indexOf("image") === 0) {
@@ -161,8 +181,8 @@ $('.right-panel').on("drop", function (event) {
                 reader.onload = function (event) {
                     $('.file-input').append(`<div class="file-item">
                                                     <div class="file-del"></div>
-                                                    <img src="${event.target.result}" alt="${files[flag].name}" class="file-preview">
-                                                    <span class="file-name" title="${files[flag].name}">${files[flag].name}</span>
+                                                    <img src="${event.target.result}" alt="${finalFiles[flag].name}" class="file-preview" draggable="false">
+                                                    <span class="file-name" title="${finalFiles[flag].name}">${finalFiles[flag].name}</span>
                                                 </div>`)
 
                 };
@@ -173,8 +193,8 @@ $('.right-panel').on("drop", function (event) {
                 reader.onload = function (event) {
                     $('.file-input').append(`<div class="file-item">
                                                     <div class="file-del"></div>
-                                                    <img src="../../static/img/unknown.png" alt="${files[flag].name}" class="file-preview">
-                                                    <span class="file-name" title="${files[flag].name}">${files[flag].name}</span>
+                                                    <img src="../../static/img/unknown.png" alt="${finalFiles[flag].name}" class="file-preview" draggable="false">
+                                                    <span class="file-name" title="${finalFiles[flag].name}">${finalFiles[flag].name}</span>
                                                 </div>`)
 
                 };
@@ -190,7 +210,8 @@ $('.right-panel').on("drop", function (event) {
 
 $(document).on('click', '.file-del', function () {
     $(this).parent('.file-item').detach();
-
+    let fileName = $(this).siblings('.file-name').text();
+    fileArray = fileArray.filter(file => file.name !== fileName);
 });
 
 $(document).on('mousewheel', '.file-input', function(e) {
@@ -199,9 +220,6 @@ $(document).on('mousewheel', '.file-input', function(e) {
 
     // 控制容器横向滚动
     $(this).scrollLeft($(this).scrollLeft() + moveX);
-
-    // 阻止默认事件
-    return false;
 });
 
 /**
@@ -366,9 +384,19 @@ function sendMsg() {
 }
 
 function sendFile() {
+    let user = '10.197.24.79';
+    let sendType = 'file';
+    let isFail = true;
+    fileArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            drawBubble('end', 'right', user, event.target.result, sendType, isFail)
+        };
+        reader.readAsDataURL(file);
+    });
 }
 
-$('.send-img').click(function () {
+function send() {
     // 发送文字
     if ($(this).hasClass('text')) {
         sendMsg();
@@ -376,6 +404,10 @@ $('.send-img').click(function () {
     }else if ($(this).hasClass('file')) {
         sendFile();
     }
+}
+
+$('.send-img').click(function () {
+    send();
 });
 
 $(document).on("keydown", "textarea", function(e) {
@@ -390,7 +422,7 @@ $(document).on("keydown", "textarea", function(e) {
         changeTextareaHeight('.text-input');
     }else if (e.keyCode === 13) {
         e.preventDefault();
-        sendMsg();
+        send();
     }
 });
 
