@@ -170,41 +170,30 @@ $('.right-panel').on("drop", function (event) {
     });
 
     if (finalFiles && finalFiles.length > 0) {
-        for (let i = 0; i < finalFiles.length; i++) {
-            var file = finalFiles[i];
+        finalFiles.forEach(file => {
             // 将文件添加到全局数组中
             fileArray.push(file)
-            var reader = new FileReader();
-            // 处理图片类文件
-            if (file.type.indexOf("image") === 0) {
-                let flag = i
-                reader.onload = function (event) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                // 处理图片类文件
+                if (file.type.indexOf("image") === 0) {
                     $('.file-input').append(`<div class="file-item">
                                                     <div class="file-del"></div>
-                                                    <img src="${event.target.result}" alt="${finalFiles[flag].name}" class="file-preview" draggable="false">
-                                                    <span class="file-name" title="${finalFiles[flag].name}">${finalFiles[flag].name}</span>
-                                                </div>`)
-
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                let flag = i
-                reader.onload = function (event) {
+                                                    <img src="${event.target.result}" alt="${file.name}" class="file-preview" draggable="false">
+                                                    <span class="file-name" title="${file.name}">${file.name}</span>
+                                                </div>`);
+                } else {
                     $('.file-input').append(`<div class="file-item">
                                                     <div class="file-del"></div>
-                                                    <img src="../../static/img/unknown.png" alt="${finalFiles[flag].name}" class="file-preview" draggable="false">
-                                                    <span class="file-name" title="${finalFiles[flag].name}">${finalFiles[flag].name}</span>
+                                                    <img src="../../static/img/unknown.png" alt="${file.name}" class="file-preview" draggable="false">
+                                                    <span class="file-name" title="${file.name}">${file.name}</span>
                                                 </div>`)
-
-                };
-
-                reader.readAsArrayBuffer(file);
-            }
-        }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
 
     }
-
     $('.left-overlay').css('display', 'none');
 });
 
