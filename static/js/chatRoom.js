@@ -311,6 +311,22 @@ function rightInsertEndText(user, sendMsg) {
 
 }
 
+function leftInsertHeadFile(user, sendMsg) {
+
+}
+
+function leftInsertEndFile(user, sendMsg) {
+
+}
+
+function rightInsertHeadFile(user, sendMsg) {
+
+}
+
+function rightInsertEndFile(user, sendMsg) {
+
+}
+
 /**
  *
  * @param horizontal:  决定气泡水平显示位置
@@ -338,7 +354,13 @@ function drawBubble(horizontal, vertical, user, sendMsg, sendType, isFail) {
             }
             // 文件气泡
         }else if (sendType === 'file') {
-
+            // 从头部插入
+            if (horizontal === 'head') {
+                leftInsertHeadFile(user, sendMsg);
+                // 从尾部插入
+            }else if (horizontal === 'end') {
+                leftInsertEndFile(user, sendMsg);
+            }
         }
         // 气泡在右边显示
     }else if (vertical === 'right') {
@@ -353,7 +375,13 @@ function drawBubble(horizontal, vertical, user, sendMsg, sendType, isFail) {
             }
             // 文件气泡
         }else if (sendType === 'file') {
-
+            // 从头部插入
+            if (horizontal === 'head') {
+                rightInsertHeadFile(user, sendMsg);
+                // 从尾部插入
+            }else if (horizontal === 'end') {
+                rightInsertEndFile(user, sendMsg);
+            }
         }
     }
 
@@ -379,7 +407,12 @@ function sendFile() {
     fileArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (event) {
-            drawBubble('end', 'right', user, event.target.result, sendType, isFail)
+            if (file.type.indexOf("image") === 0) {
+                drawBubble('end', 'right', user, event.target.result, sendType, isFail);
+            } else {
+                drawBubble('end', 'right', user, 'unknown', sendType, isFail);
+            }
+
         };
         reader.readAsDataURL(file);
     });
