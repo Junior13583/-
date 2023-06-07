@@ -1,5 +1,5 @@
 var textInput;
-var fileInput = `<div class="file-input"></div>`;
+var fileInput = `<div class="file-input" tabindex="0"></div>`;
 // 全局文件数组，保存用户添加的文件
 var fileArray = new Array();
 
@@ -192,6 +192,7 @@ $('.right-panel').on("drop", function (event) {
             };
             reader.readAsDataURL(file);
         });
+        $('.file-input').focus();
 
     }
     $('.left-overlay').css('display', 'none');
@@ -312,18 +313,65 @@ function rightInsertEndText(user, sendMsg) {
 }
 
 function leftInsertHeadFile(user, sendMsg) {
-
+    // 往前添加靠左的气泡
+    let $rightChatRoom = $('.right-chatRoom')
+    $rightChatRoom.prepend(`<div class="bubble">
+                                        <div class="bubble-user-box">
+                                            <span class="bubble-user">${user}</span>
+                                        </div>
+                                        <div class="bubble-info-box">
+                                            <div class="bubble-info-file">
+                                                <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                            </div>
+                                        </div>
+                                    </div>`);
 }
 
 function leftInsertEndFile(user, sendMsg) {
+    // 往后添加靠左的气泡
+    let $rightChatRoom = $('.right-chatRoom')
+    $rightChatRoom.append(`<div class="bubble">
+                                <div class="bubble-user-box">
+                                    <span class="bubble-user">${user}</span>
+                                </div>
+                                <div class="bubble-info-box">
+                                    <div class="bubble-info-file">
+                                        <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                    </div>
+                                </div>
+                            </div>`);
 
 }
 
 function rightInsertHeadFile(user, sendMsg) {
+    // 往前添加靠右的气泡
+    let $rightChatRoom = $('.right-chatRoom')
+    $rightChatRoom.prepend(`<div class="bubble">
+                                        <div class="bubble-user-box-right">
+                                            <span class="bubble-user">${user}</span>
+                                        </div>
+                                        <div class="bubble-info-box-right">
+                                            <div class="bubble-info-right-file">
+                                                <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                            </div>
+                                        </div>
+                                    </div>`);
 
 }
 
 function rightInsertEndFile(user, sendMsg) {
+    let $rightChatRoom = $('.right-chatRoom')
+    // 往后添加靠右的气泡
+    $rightChatRoom.append(`<div class="bubble">
+                                    <div class="bubble-user-box-right">
+                                        <span class="bubble-user">${user}</span>
+                                    </div>
+                                    <div class="bubble-info-box-right">
+                                        <div class="bubble-info-right-file">
+                                            <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                        </div>
+                                    </div>
+                                </div>`)
 
 }
 
@@ -410,9 +458,12 @@ function sendFile() {
             if (file.type.indexOf("image") === 0) {
                 drawBubble('end', 'right', user, event.target.result, sendType, isFail);
             } else {
-                drawBubble('end', 'right', user, 'unknown', sendType, isFail);
+                drawBubble('end', 'right', user, '../../static/img/unknown.png', sendType, isFail);
             }
+            // todo 向websocket发送请求
 
+            // 发消息后滚动到最底部
+            $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
         };
         reader.readAsDataURL(file);
     });
@@ -447,6 +498,13 @@ $(document).on("keydown", "textarea", function(e) {
         send();
     }
 });
+
+$(document).on('keydown', '.file-input', function (e) {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        send();
+    }
+})
 
 $('.right-chatRoom').scroll(function () {
     // todo 向后台拉取历史消息

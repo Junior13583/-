@@ -298,10 +298,18 @@ body {
     padding: 10px;
 }
 
+.bubble-info-file{
+    padding: 2px;
+}
+
 .bubble-info-right{
     background-color: rgba(74, 224, 75, 0.84);
     border-radius: 10px;
     padding: 10px;
+}
+
+.bubble-info-right-file{;
+    padding: 2px;
 }
 
 .bubble-text{
@@ -313,6 +321,13 @@ body {
     white-space: pre-wrap;
     display: inline-block;
     word-wrap: break-word;
+}
+
+.bubble-file {
+    max-width: 250px;
+    max-height: 300px;
+    border-radius: 10px;
+    border: 1px solid #707070;
 }
 
 .right-sendMessage {
@@ -369,6 +384,7 @@ body {
     display: flex;
     overflow-x: auto;
     flex-wrap: nowrap;
+    outline: none;
 }
 
 .file-item {
