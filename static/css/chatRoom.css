@@ -365,18 +365,33 @@ body {
 
 .file-input {
     width: 590px;
-    height: 105px;
+    height: 125px;
     display: flex;
-    border: 2px dashed gray;
+    overflow-x: auto;
+    flex-wrap: nowrap;
 }
 
 .file-item {
     position: relative;
+    padding: 10px;
+}
+
+.file-del {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin-left: 73px;
+    margin-top: -8px;
+    background-image: url(../img/del.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 .file-preview {
-    width: 86px;
-    height: 86px;
+    width: 85px;
+    height: 85px;
 }
 
 .file-name {
@@ -385,6 +400,12 @@ body {
     font-size: 14px;
     font-family: "Microsoft YaHei UI";
     font-weight: 500;
+    text-align: center;
+    display: block;
+    max-width: 86px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .send-img {
@@ -465,6 +486,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 0;
+  height: 0;
   background-color: transparent;
 }

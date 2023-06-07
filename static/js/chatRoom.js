@@ -135,12 +135,8 @@ $('.right-panel').on("dragover", function (event) {
         $('.send-img').addClass('file');
         // 更改发送框
         $('.text-input').remove();
-        $('.message-input').prepend(`<div class="file-input">
-                                                <div class="file-item">
-                                                    <img src="../img/unknow.png" alt="文件测试" class="file-preview">
-                                                    <span class="file-name"></span>
-                                                </div>
-                                            </div>`)
+        $('.message-input').prepend(`<div class="file-input"></div>`)
+
     }
 });
 
@@ -153,21 +149,56 @@ $('.right-panel').on("drop", function (event) {
 
     var files = event.originalEvent.dataTransfer.files;
     if (files && files.length > 0) {
-        var file = files[0];
-
-        if (file.type.indexOf("image") === 0) {
+        for (let i = 0; i < files.length; i++) {
+            var file = files[i];
             var reader = new FileReader();
+            // 处理图片类文件
+            if (file.type.indexOf("image") === 0) {
+                let flag = i
+                reader.onload = function (event) {
+                    $('.file-input').append(`<div class="file-item">
+                                                    <div class="file-del"></div>
+                                                    <img src="${event.target.result}" alt="${files[flag].name}" class="file-preview">
+                                                    <span class="file-name" title="${files[flag].name}">${files[flag].name}</span>
+                                                </div>`)
 
-            reader.onload = function (event) {
-                previewImg.attr("src", event.target.result);
-                previewWrapper.show();
-            };
+                };
 
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            } else {
+                let flag = i
+                reader.onload = function (event) {
+                    $('.file-input').append(`<div class="file-item">
+                                                    <div class="file-del"></div>
+                                                    <img src="../../static/img/unknown.png" alt="${files[flag].name}" class="file-preview">
+                                                    <span class="file-name" title="${files[flag].name}">${files[flag].name}</span>
+                                                </div>`)
+
+                };
+
+                reader.readAsArrayBuffer(file);
+            }
         }
+
     }
 
     $('.left-overlay').css('display', 'none');
+});
+
+$(document).on('click', '.file-del', function () {
+    $(this).parent('.file-item').remove();
+
+});
+
+$(document).on('mousewheel', '.file-input', function(e) {
+    // 设置鼠标移动的距离
+    let moveX = e.originalEvent.deltaY;
+
+    // 控制容器横向滚动
+    $(this).scrollLeft($(this).scrollLeft() + moveX);
+
+    // 阻止默认事件
+    return false;
 });
 
 /**
