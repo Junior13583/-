@@ -324,8 +324,8 @@ body {
 }
 
 .bubble-image {
-    max-width: 250px;
-    max-height: 300px;
+    max-width: 130px;
+    max-height: 170px;
     border-radius: 10px;
     border: 1px solid #707070;
 }

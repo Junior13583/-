@@ -1,7 +1,9 @@
 var textInput;
 var fileInput = `<div class="file-input" tabindex="0"></div>`;
 // 全局文件数组，保存用户添加的文件
-var fileArray = new Array();
+var fileArray = [];
+// 全局已发送文件数组，保存已发送的文件，用于当文件发送失败时进行重新发送
+var sendFileArray = [];
 
 $('.contact').click(function () {
     window.open('https://www.doruo.cn/s/leaving', '_blank');
@@ -230,10 +232,7 @@ function changeTextareaHeight(dom) {
         }else {
             textarea.style.height = `105px`;
         }
-    }else if (dom === '.bubble-text') {
-        textarea.style.height = `${_scrollHeight}px`;
     }
-
 }
 
 $('.text-input').on('input', function () {
@@ -491,7 +490,7 @@ $(document).on('click', '.bubble-image', function () {
 });
 
 function sendMsg() {
-    let user = '10.197.24.79';
+    let user = $('.user-ip').text();
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
     let file = '';
@@ -504,7 +503,7 @@ function sendMsg() {
 }
 
 function sendFile() {
-    let user = '10.197.24.79';
+    let user = $('.user-ip').text();
     fileArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (event) {
@@ -513,13 +512,20 @@ function sendFile() {
             } else {
                 drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file);
             }
+            // 将文件添加到已发送文件数组中
+            if (!sendFileArray.find(f => f.name === file.name && f.size === file.size)) {
+                sendFileArray.push(file);
+            }
             // todo 向websocket发送请求
 
             // 发消息后滚动到最底部
-            $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+            $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
         };
         reader.readAsDataURL(file);
     });
+    // 点击发送之后，将输入的文件清空
+    fileArray = [];
+    $('.file-input').empty();
 }
 
 function send() {
