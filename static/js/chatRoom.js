@@ -53,6 +53,7 @@ function hiddenModel() {
     // 隐藏模态框
     $('.overlay').css('z-index', '');
     $('.model').css('visibility', 'hidden');
+    $('.show-img').css('visibility', 'hidden');
 }
 
 function showModel() {
@@ -480,6 +481,14 @@ function drawBubble(horizontal, vertical, user, sendMsg, sendType, file) {
         insertOthers(horizontal, vertical, user, sendMsg, file)
     }
 }
+
+$(document).on('click', '.bubble-image', function () {
+    // 显示大图
+    let imgSrc = $(this).attr('src')
+    $('.show-img').attr('src', imgSrc)
+    $('.overlay').css('z-index', '1');
+    $('.show-img').css('visibility', 'visible');
+});
 
 function sendMsg() {
     let user = '10.197.24.79';
