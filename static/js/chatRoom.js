@@ -239,10 +239,12 @@ $('.text-input').on('input', function () {
     changeTextareaHeight('.text-input')
 });
 
-function leftInsertHeadText(user, sendMsg) {
-    // 往前添加靠左的气泡
+function insertText(horizontal, vertical, user, sendMsg) {
     let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.prepend(`<div class="bubble">
+    if (horizontal === 'left') {
+        if (vertical === 'head') {
+            // 往前添加靠左的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -252,15 +254,12 @@ function leftInsertHeadText(user, sendMsg) {
                                             </div>
                                         </div>
                                     </div>`);
-    // 获取最后添加的气泡
-    let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
-    lastBubble.textContent = sendMsg
-}
-
-function leftInsertEndText(user, sendMsg) {
-    // 往后添加靠左的气泡
-    let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.append(`<div class="bubble">
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+        } else if (vertical === 'end'){
+            // 往后添加靠左的气泡
+            $rightChatRoom.append(`<div class="bubble">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -270,15 +269,14 @@ function leftInsertEndText(user, sendMsg) {
                                             </div>
                                         </div>
                                     </div>`);
-    // 获取最后添加的气泡
-    let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
-    lastBubble.textContent = sendMsg
-}
-
-function rightInsertHeadText(user, sendMsg) {
-    // 往前添加靠右的气泡
-    let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.prepend(`<div class="bubble">
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+        }
+    }else if (horizontal === 'right') {
+        if (vertical === 'head') {
+            // 往前添加靠右的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -288,15 +286,12 @@ function rightInsertHeadText(user, sendMsg) {
                                             </div>
                                         </div>
                                     </div>`);
-    // 获取最后添加的气泡
-    let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
-    lastBubble.textContent = sendMsg
-}
-
-function rightInsertEndText(user, sendMsg) {
-    let $rightChatRoom = $('.right-chatRoom')
-    // 往后添加靠右的气泡
-    $rightChatRoom.append(`<div class="bubble">
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+        } else if (vertical === 'end'){
+            // 往后添加靠右的气泡
+            $rightChatRoom.append(`<div class="bubble">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -306,73 +301,161 @@ function rightInsertEndText(user, sendMsg) {
                                             </div>
                                         </div>
                                     </div>`)
-    // 获取最后添加的气泡
-    let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
-    lastBubble.textContent = sendMsg
-
+            // 获取最后添加的气泡
+            let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
+            lastBubble.textContent = sendMsg
+        }
+    }
 }
 
-function leftInsertHeadFile(user, sendMsg) {
-    // 往前添加靠左的气泡
+function insertImage(horizontal, vertical, user, sendMsg) {
     let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.prepend(`<div class="bubble">
+    if (horizontal === 'left') {
+        if (vertical === 'head') {
+            // 往前添加靠左的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
                                         </div>
                                         <div class="bubble-info-box">
                                             <div class="bubble-info-file">
-                                                <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                                <img class="bubble-image" src="${sendMsg}" draggable="false" alt="">
                                             </div>
                                         </div>
                                     </div>`);
-}
-
-function leftInsertEndFile(user, sendMsg) {
-    // 往后添加靠左的气泡
-    let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.append(`<div class="bubble">
+        }else if (vertical === 'end') {
+            // 往后添加靠左的气泡
+            $rightChatRoom.append(`<div class="bubble">
                                 <div class="bubble-user-box">
                                     <span class="bubble-user">${user}</span>
                                 </div>
                                 <div class="bubble-info-box">
                                     <div class="bubble-info-file">
-                                        <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                        <img class="bubble-image" src="${sendMsg}" draggable="false" alt="">
                                     </div>
                                 </div>
                             </div>`);
-
-}
-
-function rightInsertHeadFile(user, sendMsg) {
-    // 往前添加靠右的气泡
-    let $rightChatRoom = $('.right-chatRoom')
-    $rightChatRoom.prepend(`<div class="bubble">
+        }
+    }else if (horizontal === 'right') {
+        if (vertical === 'head') {
+            // 往前添加靠右的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
                                         </div>
                                         <div class="bubble-info-box-right">
                                             <div class="bubble-info-right-file">
-                                                <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                                <img class="bubble-image" src="${sendMsg}" draggable="false" alt="">
                                             </div>
                                         </div>
                                     </div>`);
-
-}
-
-function rightInsertEndFile(user, sendMsg) {
-    let $rightChatRoom = $('.right-chatRoom')
-    // 往后添加靠右的气泡
-    $rightChatRoom.append(`<div class="bubble">
+        }else if (vertical === 'end') {
+            // 往后添加靠右的气泡
+            $rightChatRoom.append(`<div class="bubble">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
                                     </div>
                                     <div class="bubble-info-box-right">
                                         <div class="bubble-info-right-file">
-                                            <img class="bubble-file" src="${sendMsg}" draggable="false" alt="">
+                                            <img class="bubble-image" src="${sendMsg}" draggable="false" alt="">
+                                        </div>
+                                    </div>
+                                </div>`)
+        }
+    }
+}
+
+function insertOthers(horizontal, vertical, user, sendMsg, file) {
+    let fileSize = file.size;
+    let convertSize = '';
+    let M = 1048576;
+    let K = 1024;
+    if (file.size < M) {
+        convertSize = `${(fileSize / K).toFixed(2)} KB`;
+    } else {
+        convertSize = `${(fileSize / M).toFixed(2)} MB`
+    }
+
+    let $rightChatRoom = $('.right-chatRoom');
+    if (horizontal === 'left') {
+        if (vertical === 'head') {
+            // 往前添加靠左的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
+                                        <div class="bubble-user-box">
+                                            <span class="bubble-user">${user}</span>
+                                        </div>
+                                        <div class="bubble-info-box">
+                                            <div class="bubble-info-file">
+                                                <div class="bubble-file">
+                                                    <div class="bubble-file-info">
+                                                        <div class="bubble-file-name" title="${file.name}">${file.name}</div>
+                                                        <div class="bubble-file-size">${convertSize}</div>
+                                                    </div>
+                                                    <img class="bubble-file-img" src="${sendMsg}" alt="" draggable="false">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`);
+        }else if (vertical === 'end') {
+            // 往后添加靠右的气泡
+            $rightChatRoom.append(`<div class="bubble">
+                                    <div class="bubble-user-box">
+                                        <span class="bubble-user">${user}</span>
+                                    </div>
+                                    <div class="bubble-info-box">
+                                        <div class="bubble-info-file">
+                                            <div class="bubble-file">
+                                                <div class="bubble-file-info">
+                                                    <div class="bubble-file-name" title="${file.name}">${file.name}</div>
+                                                    <div class="bubble-file-size">${convertSize}</div>
+                                                </div>
+                                                <img class="bubble-file-img" src="${sendMsg}" alt="" draggable="false">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`)
+        }
+
+    } else if (horizontal === 'right') {
+        if (vertical === 'head') {
+            // 往前添加靠右的气泡
+            $rightChatRoom.prepend(`<div class="bubble">
+                                    <div class="bubble-user-box-right">
+                                        <span class="bubble-user">${user}</span>
+                                    </div>
+                                    <div class="bubble-info-box-right">
+                                        <div class="bubble-info-right-file">
+                                            <div class="bubble-file">
+                                                <div class="bubble-file-info">
+                                                    <div class="bubble-file-name" title="${file.name}">${file.name}</div>
+                                                    <div class="bubble-file-size">${convertSize}</div>
+                                                </div>
+                                                <img class="bubble-file-img" src="${sendMsg}" alt="" draggable="false">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>`)
 
+        }else if (vertical === 'end') {
+            // 往后添加靠右的气泡
+            $rightChatRoom.append(`<div class="bubble">
+                                    <div class="bubble-user-box-right">
+                                        <span class="bubble-user">${user}</span>
+                                    </div>
+                                    <div class="bubble-info-box-right">
+                                        <div class="bubble-info-right-file">
+                                            <div class="bubble-file">
+                                                <div class="bubble-file-info">
+                                                    <div class="bubble-file-name" title="${file.name}">${file.name}</div>
+                                                    <div class="bubble-file-size">${convertSize}</div>
+                                                </div>
+                                                <img class="bubble-file-img" src="${sendMsg}" alt="" draggable="false">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`)
+        }
+    }
 }
 
 /**
@@ -382,66 +465,29 @@ function rightInsertEndFile(user, sendMsg) {
  * @param user:  用户名
  * @param sendMsg:  消息内容
  * @param sendType:  消息类型
- * @param isFail:  是否发送成功
+ * @param file:  文件对象
  * @return:
  * @Author: Junior
  * @Date: 2023/6/6
  */
-function drawBubble(horizontal, vertical, user, sendMsg, sendType, isFail) {
+function drawBubble(horizontal, vertical, user, sendMsg, sendType, file) {
 
-    // 气泡在左边显示
-    if (vertical === 'left') {
-        // 文字气泡
-        if (sendType === 'text') {
-            // 从头部插入
-            if (horizontal === 'head') {
-                leftInsertHeadText(user, sendMsg);
-                // 从尾部插入
-            }else if (horizontal === 'end') {
-                leftInsertEndText(user, sendMsg);
-            }
-            // 文件气泡
-        }else if (sendType === 'file') {
-            // 从头部插入
-            if (horizontal === 'head') {
-                leftInsertHeadFile(user, sendMsg);
-                // 从尾部插入
-            }else if (horizontal === 'end') {
-                leftInsertEndFile(user, sendMsg);
-            }
-        }
-        // 气泡在右边显示
-    }else if (vertical === 'right') {
-        // 文字气泡
-        if (sendType === 'text') {
-            // 从头部插入
-            if (horizontal === 'head') {
-                rightInsertHeadText(user, sendMsg);
-                // 从尾部插入
-            }else if (horizontal === 'end') {
-                rightInsertEndText(user, sendMsg);
-            }
-            // 文件气泡
-        }else if (sendType === 'file') {
-            // 从头部插入
-            if (horizontal === 'head') {
-                rightInsertHeadFile(user, sendMsg);
-                // 从尾部插入
-            }else if (horizontal === 'end') {
-                rightInsertEndFile(user, sendMsg);
-            }
-        }
+    if (sendType === 'text') {
+        insertText(horizontal, vertical, user, sendMsg);
+    }else if (sendType === 'image') {
+        insertImage(horizontal, vertical, user, sendMsg);
+    }else if (sendType === 'others') {
+        insertOthers(horizontal, vertical, user, sendMsg, file)
     }
-
 }
 
 function sendMsg() {
     let user = '10.197.24.79';
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
-    let isFail = true;
+    let file = '';
     $('.text-input').val('');
-    drawBubble('end', 'right', user, sendMsg, sendType, isFail)
+    drawBubble('right', 'end', user, sendMsg, sendType, file)
     // todo 向websocket发送请求
     ws.send(sendMsg);
     // 发消息后滚动到最底部
@@ -450,15 +496,13 @@ function sendMsg() {
 
 function sendFile() {
     let user = '10.197.24.79';
-    let sendType = 'file';
-    let isFail = true;
     fileArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (event) {
             if (file.type.indexOf("image") === 0) {
-                drawBubble('end', 'right', user, event.target.result, sendType, isFail);
+                drawBubble('right', 'end', user, event.target.result, 'image', '');
             } else {
-                drawBubble('end', 'right', user, '../../static/img/unknown.png', sendType, isFail);
+                drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file);
             }
             // todo 向websocket发送请求
 
@@ -509,17 +553,17 @@ $(document).on('keydown', '.file-input', function (e) {
 $('.right-chatRoom').scroll(function () {
     // todo 向后台拉取历史消息
     let msgArray = new Array();
-    msgArray.push({horizontal: 'head',vertical: 'left', user: '10.197.24.79',  sendMsg: '我房里有些好康的！', sendType: 'text', isFail: true})
-    msgArray.push({horizontal: 'head',vertical: 'right', user: '10.197.24.79', sendMsg: '开玩笑，我超勇的好不好！', sendType: 'text', isFail: true})
-    msgArray.push({horizontal: 'head',vertical: 'left', user: '10.197.24.79', sendMsg: '让我看看你发育正常不正常！', sendType: 'text', isFail: true})
-    msgArray.push({horizontal: 'head',vertical: 'right', user: '10.197.24.79', sendMsg: '不要啦，杰哥，你干嘛啊！', sendType: 'text', isFail: true})
+    msgArray.push({horizontal: 'left',vertical: 'head', user: '10.197.24.79',  sendMsg: '<div class="send-img text"></div>', sendType: 'text', file: ''})
+    msgArray.push({horizontal: 'right',vertical: 'head', user: '10.197.24.79', sendMsg: '开玩笑，我超勇的好不好！', sendType: 'text', file: ''})
+    msgArray.push({horizontal: 'left',vertical: 'head', user: '10.197.24.79', sendMsg: '让我看看你发育正常不正常！', sendType: 'text', file: ''})
+    msgArray.push({horizontal: 'right',vertical: 'head', user: '10.197.24.79', sendMsg: '不要啦，杰哥，你干嘛啊！', sendType: 'text', file: ''})
 
     let res = msgArray.reverse();
     if ($(this).scrollTop() === 0) {
         // 添加前滚动条长度
         let beforeScrollLength = $(this).prop('scrollHeight');
         for (let i = 0; i<res.length; i++) {
-            drawBubble(res[i].horizontal, res[i].vertical, res[i].user, res[i].sendMsg, res[i].sendType, res[i].isFail)
+            drawBubble(res[i].horizontal, res[i].vertical, res[i].user, res[i].sendMsg, res[i].sendType, res[i].file)
         }
         // 添加后滚动条长度
         let afterScrollLength = $(this).prop('scrollHeight');
@@ -534,7 +578,7 @@ function acceptMsg(res) {
     // 添加前滚动条位置
     let beforeScrollLength = $('.right-chatRoom').scrollTop();
     // 绘制聊天气泡
-    drawBubble('end', 'left', 'ws服务器', res, 'text', true)
+    drawBubble('left', 'end', 'ws服务器', res, 'text', '')
     // 添加后滚动条长度
     let afterScrollLength = $('.right-chatRoom').prop('scrollHeight');
     // 滚动范围较小将聚焦到底部
