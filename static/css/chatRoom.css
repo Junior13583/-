@@ -285,11 +285,36 @@ body {
 
 .bubble-info-box{
     display: flex;
+    align-items: center;
 }
 
 .bubble-info-box-right{
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+}
+
+.bubble-loading {
+    width: 36px;
+    height: 36px;
+    padding: 10px;
+    /* 设置动画时长为 5 秒 */
+    animation: rotation 1.5s linear infinite;
+    /* 图片当前逆时针旋转 0 度 */
+    transform: rotate(0deg);
+}
+
+@keyframes rotation {
+    /* 图片当前逆时针旋转 0 度 */
+    from { transform: rotate(0deg); }
+    /* 图片逆时针旋转一周（360 度） */
+    to { transform: rotate(360deg); }
+}
+
+.bubble-error {
+    width: 36px;
+    height: 36px;
+    padding: 10px;
 }
 
 .bubble-info{

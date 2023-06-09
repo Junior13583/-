@@ -239,6 +239,18 @@ $('.text-input').on('input', function () {
     changeTextareaHeight('.text-input')
 });
 
+function getConvertSize(fileSize) {
+    let convertSize = '';
+    let M = 1048576;
+    let K = 1024;
+    if (fileSize < M) {
+        convertSize = `${(fileSize / K).toFixed(2)} KB`;
+    } else {
+        convertSize = `${(fileSize / M).toFixed(2)} MB`
+    }
+    return convertSize
+}
+
 function insertText(horizontal, vertical, user, sendMsg) {
     let $rightChatRoom = $('.right-chatRoom')
     if (horizontal === 'left') {
@@ -306,6 +318,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
             lastBubble.textContent = sendMsg
         }
     }
+    return $rightChatRoom.children().last();
 }
 
 function insertImage(horizontal, vertical, user, sendMsg) {
@@ -363,18 +376,12 @@ function insertImage(horizontal, vertical, user, sendMsg) {
                                 </div>`)
         }
     }
+    return $rightChatRoom.children().last();
 }
 
 function insertOthers(horizontal, vertical, user, sendMsg, file) {
     let fileSize = file.size;
-    let convertSize = '';
-    let M = 1048576;
-    let K = 1024;
-    if (file.size < M) {
-        convertSize = `${(fileSize / K).toFixed(2)} KB`;
-    } else {
-        convertSize = `${(fileSize / M).toFixed(2)} MB`
-    }
+    let convertSize = getConvertSize(file.size);
 
     let $rightChatRoom = $('.right-chatRoom');
     if (horizontal === 'left') {
@@ -456,6 +463,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
                                 </div>`)
         }
     }
+    return $rightChatRoom.children().last();
 }
 
 /**
@@ -471,14 +479,15 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
  * @Date: 2023/6/6
  */
 function drawBubble(horizontal, vertical, user, sendMsg, sendType, file) {
-
+    let thisBubble;
     if (sendType === 'text') {
-        insertText(horizontal, vertical, user, sendMsg);
+        thisBubble = insertText(horizontal, vertical, user, sendMsg);
     }else if (sendType === 'image') {
-        insertImage(horizontal, vertical, user, sendMsg);
+        thisBubble = insertImage(horizontal, vertical, user, sendMsg);
     }else if (sendType === 'others') {
-        insertOthers(horizontal, vertical, user, sendMsg, file)
+        thisBubble = insertOthers(horizontal, vertical, user, sendMsg, file)
     }
+    return thisBubble;
 }
 
 $(document).on('click', '.bubble-image', function () {
@@ -489,6 +498,24 @@ $(document).on('click', '.bubble-image', function () {
     $('.show-img').css('visibility', 'visible');
 });
 
+function isSending(dom) {
+    // 移除发送失败标志
+    $(dom).find('.bubble-error').remove();
+    // 添加正在发送标志
+    $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/loading.png" class="bubble-loading">`)
+}
+
+function sendSuccess(dom) {
+    // 移除正在发送标志
+    $(dom).find('.bubble-loading').remove();
+}
+function sendError(dom) {
+    // 移除正在发送标志
+    $(dom).find('.bubble-loading').remove();
+    // 添加发送失败标志
+    $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/error.png" class="bubble-error">`)
+}
+
 function sendMsg() {
     let user = $('.user-ip').text();
     let sendType = 'text';
@@ -497,26 +524,52 @@ function sendMsg() {
     $('.text-input').val('');
     drawBubble('right', 'end', user, sendMsg, sendType, file)
     // todo 向websocket发送请求
-    ws.send(sendMsg);
+    ws.send(sendMsg, function (error) {
+        console.log(`${sendMsg}发送失败`)
+    });
     // 发消息后滚动到最底部
     $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
 }
 
 function sendFile() {
+    let index = 0;
     let user = $('.user-ip').text();
+    let bubbles = [];
     fileArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (event) {
             if (file.type.indexOf("image") === 0) {
-                drawBubble('right', 'end', user, event.target.result, 'image', '');
+                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', ''));
             } else {
-                drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file);
+                bubbles.push(drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file));
             }
+            // 添加正在发送标志
+            isSending(bubbles[index]);
             // 将文件添加到已发送文件数组中
             if (!sendFileArray.find(f => f.name === file.name && f.size === file.size)) {
                 sendFileArray.push(file);
             }
-            // todo 向websocket发送请求
+
+            // todo ajax发送文件，发送成功去除正在发送标志，发送失败添加发送失败标志
+            let fromData = new FormData();
+            fromData.append('index', index);
+            fromData.append('file', file);
+            $.ajax({
+                url: 'http://10.197.24.79:8000/',
+                type: 'post',
+                data: fromData,
+                contentType: false,
+                processData: false,
+                crossDomain: true,
+                success: function (res) {
+                    sendSuccess(bubbles[index]);
+                    index++;
+                },
+                error: function (res) {
+                    sendError(bubbles[index]);
+                    index++;
+                }
+            });
 
             // 发消息后滚动到最底部
             $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
@@ -605,14 +658,32 @@ function acceptMsg(res) {
 }
 
 
-var ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
-ws.onopen = function(evt){
-    console.log("on open");
+let ws;
+
+function connect() {
+    ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
+
+    ws.onopen = function() {
+        console.log('连接已经建立');
+    };
+
+    ws.onmessage = function(evt) {
+        acceptMsg(evt.data)
+        console.log(evt.data);
+    };
+
+    ws.onerror = function() {
+        console.log('onerror')
+    };
+
+    ws.onclose = function() {
+        console.log("on close");
+
+        setTimeout(function() {
+            console.log('正在尝试重新连接...');
+            connect();
+        }, 1000);
+    };
 }
-ws.onclose = function(evt){
-    console.log("on close");
-}
-ws.onmessage = function(evt){
-    acceptMsg(evt.data)
-    console.log(evt.data);
-}
+
+// connect();
