@@ -502,7 +502,8 @@ function isSending(dom) {
     // 移除发送失败标志
     $(dom).find('.bubble-error').remove();
     // 添加正在发送标志
-    $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/loading.png" class="bubble-loading">`)
+    if ($(dom).find('.bubble-loading').length === 0)
+        $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/loading.png" class="bubble-loading">`)
 }
 
 function sendSuccess(dom) {
@@ -513,7 +514,8 @@ function sendError(dom) {
     // 移除正在发送标志
     $(dom).find('.bubble-loading').remove();
     // 添加发送失败标志
-    $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/error.png" class="bubble-error">`)
+    if($(dom).find('.bubble-erro').length === 0)
+        $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/error.png" class="bubble-error">`)
 }
 
 function sendMsg() {
@@ -562,15 +564,20 @@ function sendFile() {
                 processData: false,
                 crossDomain: true,
                 success: function (res) {
-                    sendSuccess(bubbles[index]);
-                    index++;
+                    if (res['code'] === 200) {
+                        sendSuccess(bubbles[res['index']]);
+                    } else {
+                        sendError(bubbles[res['index']]);
+                    }
+                    bubbles.splice(res['index'], 1)
                 },
-                error: function (res) {
-                    sendError(bubbles[index]);
-                    index++;
+                error: function () {
+                    bubbles.forEach(bubble => {
+                        sendError(bubble)
+                    })
                 }
             });
-
+            index++;
             // 发消息后滚动到最底部
             $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
         };
