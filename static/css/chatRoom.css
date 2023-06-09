@@ -295,8 +295,8 @@ body {
 }
 
 .bubble-loading {
-    width: 36px;
-    height: 36px;
+    width: 25px;
+    height: 25px;
     padding: 10px;
     /* 设置动画时长为 5 秒 */
     animation: rotation 1.5s linear infinite;
@@ -312,9 +312,10 @@ body {
 }
 
 .bubble-error {
-    width: 36px;
-    height: 36px;
+    width: 25px;
+    height: 25px;
     padding: 10px;
+    cursor: pointer;
 }
 
 .bubble-info{

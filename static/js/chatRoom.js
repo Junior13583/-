@@ -321,12 +321,12 @@ function insertText(horizontal, vertical, user, sendMsg) {
     return $rightChatRoom.children().last();
 }
 
-function insertImage(horizontal, vertical, user, sendMsg) {
+function insertImage(horizontal, vertical, user, sendMsg, fileName) {
     let $rightChatRoom = $('.right-chatRoom')
     if (horizontal === 'left') {
         if (vertical === 'head') {
             // 往前添加靠左的气泡
-            $rightChatRoom.prepend(`<div class="bubble">
+            $rightChatRoom.prepend(`<div class="bubble" name="${fileName}">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -338,7 +338,7 @@ function insertImage(horizontal, vertical, user, sendMsg) {
                                     </div>`);
         }else if (vertical === 'end') {
             // 往后添加靠左的气泡
-            $rightChatRoom.append(`<div class="bubble">
+            $rightChatRoom.append(`<div class="bubble" name="${fileName}">
                                 <div class="bubble-user-box">
                                     <span class="bubble-user">${user}</span>
                                 </div>
@@ -352,7 +352,7 @@ function insertImage(horizontal, vertical, user, sendMsg) {
     }else if (horizontal === 'right') {
         if (vertical === 'head') {
             // 往前添加靠右的气泡
-            $rightChatRoom.prepend(`<div class="bubble">
+            $rightChatRoom.prepend(`<div class="bubble" name="${fileName}">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -364,7 +364,7 @@ function insertImage(horizontal, vertical, user, sendMsg) {
                                     </div>`);
         }else if (vertical === 'end') {
             // 往后添加靠右的气泡
-            $rightChatRoom.append(`<div class="bubble">
+            $rightChatRoom.append(`<div class="bubble" name="${fileName}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
                                     </div>
@@ -387,7 +387,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
     if (horizontal === 'left') {
         if (vertical === 'head') {
             // 往前添加靠左的气泡
-            $rightChatRoom.prepend(`<div class="bubble">
+            $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
                                         </div>
@@ -405,7 +405,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
                                     </div>`);
         }else if (vertical === 'end') {
             // 往后添加靠右的气泡
-            $rightChatRoom.append(`<div class="bubble">
+            $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box">
                                         <span class="bubble-user">${user}</span>
                                     </div>
@@ -426,7 +426,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
     } else if (horizontal === 'right') {
         if (vertical === 'head') {
             // 往前添加靠右的气泡
-            $rightChatRoom.prepend(`<div class="bubble">
+            $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
                                     </div>
@@ -445,7 +445,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
 
         }else if (vertical === 'end') {
             // 往后添加靠右的气泡
-            $rightChatRoom.append(`<div class="bubble">
+            $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
                                     </div>
@@ -483,7 +483,7 @@ function drawBubble(horizontal, vertical, user, sendMsg, sendType, file) {
     if (sendType === 'text') {
         thisBubble = insertText(horizontal, vertical, user, sendMsg);
     }else if (sendType === 'image') {
-        thisBubble = insertImage(horizontal, vertical, user, sendMsg);
+        thisBubble = insertImage(horizontal, vertical, user, sendMsg, file);
     }else if (sendType === 'others') {
         thisBubble = insertOthers(horizontal, vertical, user, sendMsg, file)
     }
@@ -514,9 +514,31 @@ function sendError(dom) {
     // 移除正在发送标志
     $(dom).find('.bubble-loading').remove();
     // 添加发送失败标志
-    if($(dom).find('.bubble-erro').length === 0)
+    if($(dom).find('.bubble-error').length === 0)
         $(dom).find('.bubble-info-box-right').prepend(`<img src="../../static/img/error.png" class="bubble-error">`)
 }
+
+$(document).on('click', '.bubble-error', function () {
+    let bubbleDom = $(this).parents('.bubble')
+    let bubbles = [bubbleDom[0]]
+    let formData = new FormData();
+    // 发送失败消息重新发送
+    if (bubbleDom.find('.bubble-info-right-file').length > 0) {
+        // 重发文件
+        let fileName = bubbleDom.attr('name');
+        let file = sendFileArray.find(f => f.name === fileName);
+        // 更改为发送状态
+        isSending(bubbleDom);
+        // 使用ajax发送文件
+        formData.append('index', '1');
+        formData.append('file', file);
+        ajaxFile(formData, bubbles);
+
+
+    }else if (bubbleDom.find('.bubble-info-right').length > 0) {
+        // 重发文字
+    }
+});
 
 function sendMsg() {
     let user = $('.user-ip').text();
@@ -526,11 +548,35 @@ function sendMsg() {
     $('.text-input').val('');
     drawBubble('right', 'end', user, sendMsg, sendType, file)
     // todo 向websocket发送请求
-    ws.send(sendMsg, function (error) {
-        console.log(`${sendMsg}发送失败`)
-    });
+    // ws.send(sendMsg, function (error) {
+    //     console.log(`${sendMsg}发送失败`)
+    // });
     // 发消息后滚动到最底部
     $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+}
+
+function ajaxFile(formData, bubbles) {
+    $.ajax({
+        url: 'http://10.197.24.79:8000/',
+        type: 'post',
+        data: formData,
+        contentType: false,
+        processData: false,
+        crossDomain: true,
+        success: function (res) {
+            if (res['code'] === 200) {
+                sendSuccess(bubbles[res['index']]);
+            } else {
+                sendError(bubbles[res['index']]);
+            }
+            bubbles.splice(res['index'], 1)
+        },
+        error: function () {
+            bubbles.forEach(bubble => {
+                sendError(bubble)
+            })
+        }
+    });
 }
 
 function sendFile() {
@@ -541,7 +587,7 @@ function sendFile() {
         const reader = new FileReader();
         reader.onload = function (event) {
             if (file.type.indexOf("image") === 0) {
-                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', ''));
+                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', file.name));
             } else {
                 bubbles.push(drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file));
             }
@@ -553,30 +599,12 @@ function sendFile() {
             }
 
             // todo ajax发送文件，发送成功去除正在发送标志，发送失败添加发送失败标志
-            let fromData = new FormData();
-            fromData.append('index', index);
-            fromData.append('file', file);
-            $.ajax({
-                url: 'http://10.197.24.79:8000/',
-                type: 'post',
-                data: fromData,
-                contentType: false,
-                processData: false,
-                crossDomain: true,
-                success: function (res) {
-                    if (res['code'] === 200) {
-                        sendSuccess(bubbles[res['index']]);
-                    } else {
-                        sendError(bubbles[res['index']]);
-                    }
-                    bubbles.splice(res['index'], 1)
-                },
-                error: function () {
-                    bubbles.forEach(bubble => {
-                        sendError(bubble)
-                    })
-                }
-            });
+            let formData = new FormData();
+            formData.append('index', index);
+            formData.append('file', file);
+            // 发送文件
+            ajaxFile(formData, bubbles)
+
             index++;
             // 发消息后滚动到最底部
             $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
