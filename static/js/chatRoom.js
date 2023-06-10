@@ -5,6 +5,37 @@ var fileArray = [];
 // 全局已发送文件数组，保存已发送的文件，用于当文件发送失败时进行重新发送
 var sendFileArray = [];
 
+let ws = null;
+function connect() {
+
+    ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
+
+    ws.onopen = function() {
+        console.log('连接已经建立');
+
+    };
+
+    ws.onmessage = function(evt) {
+        acceptMsg(evt.data)
+        console.log(evt.data);
+    };
+
+    ws.onerror = function() {
+        console.log('onerror')
+    };
+
+    ws.onclose = function() {
+        console.log("on close");
+
+        setTimeout(function() {
+            console.log('正在尝试重新连接...');
+            connect();
+        }, 1000);
+    };
+}
+
+// connect();
+
 $('.contact').click(function () {
     window.open('https://www.doruo.cn/s/leaving', '_blank');
 })
@@ -23,6 +54,7 @@ function selectChatRoom(selectDom) {
     let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
+    connect();
 }
 
 $(document).on('click', '.chat-item-main', function () {
@@ -530,32 +562,44 @@ $(document).on('click', '.bubble-error', function () {
         // 更改为发送状态
         isSending(bubbleDom);
         // 使用ajax发送文件
-        formData.append('index', '1');
+        formData.append('index', '0');
         formData.append('file', file);
         ajaxFile(formData, bubbles);
 
 
     }else if (bubbleDom.find('.bubble-info-right').length > 0) {
         // 重发文字
+        let sendMsg = bubbleDom.find('.bubble-text').text();
+        // 去除发送失败标志
+        $(bubbleDom[0]).find('.bubble-error').remove();
+        websocketSend(sendMsg,bubbleDom[0])
     }
 });
+
+function websocketSend(sendMsg, bubble) {
+    if (ws.readyState === 1) {
+        ws.send(sendMsg);
+    } else {
+        sendError(bubble)
+    }
+}
 
 function sendMsg() {
     let user = $('.user-ip').text();
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
     let file = '';
+    let thisBubble = drawBubble('right', 'end', user, sendMsg, sendType, file)
     $('.text-input').val('');
-    drawBubble('right', 'end', user, sendMsg, sendType, file)
     // todo 向websocket发送请求
-    // ws.send(sendMsg, function (error) {
-    //     console.log(`${sendMsg}发送失败`)
-    // });
+    websocketSend(sendMsg, thisBubble);
+
     // 发消息后滚动到最底部
-    $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+    $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
 }
 
 function ajaxFile(formData, bubbles) {
+    let copyBubbles = bubbles.slice();
     $.ajax({
         url: 'http://10.197.24.79:8000/',
         type: 'post',
@@ -569,10 +613,10 @@ function ajaxFile(formData, bubbles) {
             } else {
                 sendError(bubbles[res['index']]);
             }
-            bubbles.splice(res['index'], 1)
+            copyBubbles.splice(res['index'], 1)
         },
         error: function () {
-            bubbles.forEach(bubble => {
+            copyBubbles.forEach(bubble => {
                 sendError(bubble)
             })
         }
@@ -693,32 +737,4 @@ function acceptMsg(res) {
 }
 
 
-let ws;
 
-function connect() {
-    ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
-
-    ws.onopen = function() {
-        console.log('连接已经建立');
-    };
-
-    ws.onmessage = function(evt) {
-        acceptMsg(evt.data)
-        console.log(evt.data);
-    };
-
-    ws.onerror = function() {
-        console.log('onerror')
-    };
-
-    ws.onclose = function() {
-        console.log("on close");
-
-        setTimeout(function() {
-            console.log('正在尝试重新连接...');
-            connect();
-        }, 1000);
-    };
-}
-
-// connect();
