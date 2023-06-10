@@ -6,12 +6,14 @@ var fileArray = [];
 var sendFileArray = [];
 
 let ws = null;
-function connect() {
-
+function connect(room) {
+    if (ws != null) {
+        ws.close(1000, 'Client active close')
+    }
     ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
 
     ws.onopen = function() {
-        console.log('连接已经建立');
+        console.log(`聊天室-->${room}: 连接已经建立`);
 
     };
 
@@ -24,13 +26,15 @@ function connect() {
         console.log('onerror')
     };
 
-    ws.onclose = function() {
-        console.log("on close");
-
-        setTimeout(function() {
-            console.log('正在尝试重新连接...');
-            connect();
-        }, 1000);
+    ws.onclose = function(evt) {
+        if (evt.reason.match(/b'([^']+)'/)[1] === 'Client active close') {
+            console.log(`聊天室-->${room}: 关闭当前连接`);
+        } else {
+            setTimeout(function() {
+                console.log(`聊天室-->${room}: 正在尝试重新连接...`);
+                connect(room);
+            }, 1000);
+        }
     };
 }
 
@@ -54,7 +58,7 @@ function selectChatRoom(selectDom) {
     let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
-    connect();
+    connect(chatTitle);
 }
 
 $(document).on('click', '.chat-item-main', function () {
