@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.junior.mapper.ChatRoomMapper">
+
+    <sql id="InsertChatRoomColum">
+        (roomName, creator)
+    </sql>
+
+    <insert id="insertChatRoom" parameterType="ChatRoom">
+        insert into chatroom
+            <include refid="InsertChatRoomColum"></include>
+        values
+            (#{roomName}, #{creator});
+
+    </insert>
+
+    <resultMap id="ChatRoomMap" type="ChatRoom">
+        <result property="roomId" column="roomId"/>
+        <result property="roomName" column="roomName"/>
+        <result property="creator" column="creator"/>
+    </resultMap>
+
+    <select id="queryChatRoom" resultMap="ChatRoomMap">
+        select *
+        from chatroom ;
+    </select>
+</mapper>

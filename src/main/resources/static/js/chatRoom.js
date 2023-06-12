@@ -64,11 +64,13 @@ $(document).on('mouseleave', '.chat-item', function () {
 });
 
 function selectChatRoom(selectDom) {
+    $('.right-panel').css('visibility', 'visible')
     $('.chat-selected').removeClass('chat-selected');
     $(selectDom).addClass('chat-selected');
     let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
+
     connect(chatTitle);
 }
 
@@ -95,7 +97,7 @@ function delChatRoom(isCreate, dom) {
 $(document).on('click', '.chat-del', function () {
     // TODO 请求后端删除
     let delDom = $(this).parent('.chat-item')
-    delChatRoom(true, delDom);
+    delChatRoom(false, delDom);
 });
 
 function hiddenModel() {
@@ -113,16 +115,35 @@ function showModel() {
 
 function addChat() {
     let chatRoom = $('.model-input').val();
+    let formData = new FormData();
+    formData.append('roomName', chatRoom);
     if (chatRoom !== '') {
-        $('.item-box').append(`<div class="chat-item">
+        $.ajax({
+            url: '/addChat/',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.code === 200) {
+                    $('.item-box').append(`<div class="chat-item">
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${chatRoom}</div>
                                 <div class="chat-bottom">
                                     <div class="chat-time">2023-06-29 09:45</div>
-                                    <div class="chat-num">9999条对话</div>
+                                    <div class="chat-num">0条对话</div>
                                 </div>
                             </div>`);
-        $('.model-input').val("");
+                    $('.model-input').val("");
+                }else {
+                    alert(res.msg)
+                }
+            },
+            error: function (res) {
+
+            },
+        })
+
     }else {
         alert("聊天室不能为空！！")
     }
