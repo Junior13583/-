@@ -8,9 +8,9 @@ var sendFileArray = [];
 let ws = null;
 function connect(room) {
     if (ws != null) {
-        ws.close(1000, 'Client active close')
+        ws.close(1000, '切换聊天室')
     }
-    ws = new WebSocket('ws:localhost:10000/websocket/Junior 的聊天室');
+    ws = new WebSocket(`ws:10.197.24.79:8080/websocket/${room}`);
 
     ws.onopen = function() {
         console.log(`聊天室-->${room}: 连接已经建立`);
@@ -19,7 +19,6 @@ function connect(room) {
 
     ws.onmessage = function(evt) {
         acceptMsg(evt.data)
-        console.log(evt.data);
     };
 
     ws.onerror = function() {
@@ -27,7 +26,7 @@ function connect(room) {
     };
 
     ws.onclose = function(evt) {
-        if (evt.reason.match(/b'([^']+)'/)[1] === 'Client active close') {
+        if (evt.reason === '切换聊天室') {
             console.log(`聊天室-->${room}: 关闭当前连接`);
         } else {
             setTimeout(function() {
@@ -38,7 +37,19 @@ function connect(room) {
     };
 }
 
-// connect();
+$.ajax({
+    url: '/getIp/',
+    type: 'post',
+    contentType: false,
+    processData: false,
+    success: function (res) {
+        if (res.code === 200) {
+            $('.user-ip').text(res.data);
+        } else {
+            $('.user-ip').text('我');
+        }
+    }
+});
 
 $('.contact').click(function () {
     window.open('https://www.doruo.cn/s/leaving', '_blank');
@@ -726,10 +737,11 @@ $('.right-chatRoom').scroll(function () {
 // 模拟接受websocket消息
 function acceptMsg(res) {
 
+    let resJson = JSON.parse(res);
     // 添加前滚动条位置
     let beforeScrollLength = $('.right-chatRoom').scrollTop();
     // 绘制聊天气泡
-    drawBubble('left', 'end', 'ws服务器', res, 'text', '')
+    drawBubble('left', 'end', resJson.msg, resJson.data, 'text', '')
     // 添加后滚动条长度
     let afterScrollLength = $('.right-chatRoom').prop('scrollHeight');
     // 滚动范围较小将聚焦到底部

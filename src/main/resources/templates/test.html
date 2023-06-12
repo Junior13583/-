@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .test {
+        background: #15af28;
+        white-space: pre-wrap;
+        /*text-align: center;*/
+        font-size: 14px;
+        /* height: 21px; */
+        max-width: 192px;
+        display: inline-block;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+</style>
+<body>
+
+<!--<span class="test"></span>-->
+
+<script>
+document.querySelector('.test').textContent = `<div>
+  <span>第一行文本</span>
+  <span>第二行文本</span>
+  <span>第三行文本</span>
+</div>`
+</script>
+</body>
+</html>

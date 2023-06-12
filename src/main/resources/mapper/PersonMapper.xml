@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.junior.mapper.PersonMapper">
+    <sql id="insertPersonColum">
+        (username, password, age, sex, phoneNumber, address)
+    </sql>
+
+    <insert id="insertPerson" parameterType="Person">
+        insert into person
+            <include refid="insertPersonColum"></include>
+        values (#{username}, #{password}, #{age}, #{sex}, #{phoneNumber}, #{address});
+    </insert>
+
+    <insert id="insertListPerson" parameterType="list">
+        insert into person
+            <include refid="insertPersonColum"></include>
+        values
+            -- 这里实体类 Person 首字母不能大写
+            <foreach collection="list" item="person" separator=",">
+                (#{person.username}, #{person.password}, #{person.age}, #{person.sex}, #{person.phoneNumber}, #{person.address})
+            </foreach>
+    </insert>
+
+    <update id="updatePerson" parameterType="Person">
+        update person
+        set
+            username = #{username}, password = #{password}, age = #{age}, sex = #{sex},
+            phoneNumber = #{phoneNumber}, address = #{address}
+        where
+            id = #{id}
+    </update>
+
+    <select id="selectPersonByPage" resultType="com.example.junior.entity.Person">
+        select *
+        from person
+    </select>
+    <!-- 自定义count查询，避免数据量大时连表查询统计总数时耗时过长，可以以主表为基准统计总数，注意返回类型为 Long   -->
+    <select id="selectPersonByPage_COUNT" resultType="Long">
+        select count(id)
+        from person
+    </select>
+</mapper>

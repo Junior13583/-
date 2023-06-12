@@ -1,0 +1,38 @@
+my-thread-pool:
+  maxPoolSize: 20
+  corePoolSize: 8
+  queueCapacity: 2048
+  keepAliveSeconds: 60
+  threadNamePrefix: springThreadPool-
+  waitForTasksToCompleteOnShutdown: true
+
+spring:
+  datasource:
+    url: jdbc:mysql://10.175.94.80:7000/junior?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  cloud:
+    sentinel:
+      transport:
+        port: 8079
+        dashboard: localhost:3333
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+mybatis:
+  config-location: classpath:mapperConfig/mapperConfig.xml
+  type-aliases-package: com.example.junior.entity.request
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
