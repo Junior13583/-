@@ -1,6 +1,7 @@
 package com.example.junior.controller;
 
 import com.example.junior.dto.ChatRoomDTO;
+import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.service.chatService.ChatRoomServiceImpl;
 import com.example.junior.vo.ResponseDataVO;
 import org.hibernate.validator.constraints.Length;
@@ -29,19 +30,27 @@ public class ChatRoomController {
         return new ModelAndView("index");
     }
 
-    @PostMapping("/getIp")
+    @PostMapping("/getUserInfo")
     @ResponseBody
     public ResponseDataVO getIp(HttpServletRequest request) {
 
-        return ResponseDataVO.success(ipInfo(request));
+        return chatRoomService.getUserInfo(ipInfo(request));
     }
 
     @PostMapping("/addChat")
     @ResponseBody
     public ResponseDataVO addChat(HttpServletRequest request, @RequestParam @Length(min = 3, max = 12) String  roomName) {
         String ip = ipInfo(request);
-        String res = chatRoomService.insertChatRoom(roomName, ip);
-        return ResponseDataVO.success(res);
+
+        return chatRoomService.insertChatRoom(roomName, ip);
+    }
+
+    @PostMapping("/delChat")
+    @ResponseBody
+    public ResponseDataVO delChat(HttpServletRequest request, @RequestParam String roomName) {
+        String ip = ipInfo(request);
+
+        return chatRoomService.deleteUserRoom(roomName, ip);
     }
 
     public String ipInfo(HttpServletRequest request) {

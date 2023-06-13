@@ -38,13 +38,26 @@ function connect(room) {
 }
 
 $.ajax({
-    url: '/getIp/',
+    url: '/getUserInfo/',
     type: 'post',
     contentType: false,
     processData: false,
     success: function (res) {
         if (res.code === 200) {
-            $('.user-ip').text(res.data);
+            $('.user-ip').text(res.msg);
+            res.data.forEach(data => {
+                let datetimeArray = data.createTime;
+                let datetime = new Date(datetimeArray[0], datetimeArray[1] - 1, datetimeArray[2], datetimeArray[3], datetimeArray[4], datetimeArray[5]);  // 将数组转换为Date对象
+                let formattedDatetime = datetime.toISOString().replace('T', ' ').substr(0, 16);
+                $('.item-box').append(`<div class="chat-item">
+                                <div class="chat-del"></div>
+                                <div class="chat-title">${data.roomName}</div>
+                                <div class="chat-bottom">
+                                    <div class="chat-time">${formattedDatetime}</div>
+                                    <div class="chat-num">0条对话</div>
+                                </div>
+                            </div>`);
+            })
         } else {
             $('.user-ip').text('我');
         }
@@ -90,11 +103,35 @@ function delChatRoom(isCreate, dom) {
 
         }
     }else {
-        dom.detach();
+        let roomName = $(dom).find('.chat-title').text();
+        let formData = new FormData();
+        formData.append("roomName", roomName);
+        $.ajax({
+            url: '/delChat/',
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.code === 200) {
+                    // alert(res.data);
+                    dom.detach();
+                }else if(res.code === 201) {
+                    alert(res.data)
+                }else {
+                    alert(res.msg)
+                }
+            },
+            error:function (res) {
+
+            }
+        })
+
     }
 }
 
-$(document).on('click', '.chat-del', function () {
+$(document).on('click', '.chat-del', function (event) {
+    event.stopPropagation()
     // TODO 请求后端删除
     let delDom = $(this).parent('.chat-item')
     delChatRoom(false, delDom);
@@ -126,6 +163,7 @@ function addChat() {
             processData: false,
             success: function (res) {
                 if (res.code === 200) {
+                    // alert(res.data);
                     $('.item-box').append(`<div class="chat-item">
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${chatRoom}</div>
@@ -135,6 +173,8 @@ function addChat() {
                                 </div>
                             </div>`);
                     $('.model-input').val("");
+                }else if(res.code === 201) {
+                    alert(res.data)
                 }else {
                     alert(res.msg)
                 }

@@ -1,9 +1,13 @@
 package com.example.junior.mapStruct;
 
 import com.example.junior.dto.ChatRoomDTO;
+import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.entity.ChatRoom;
+import com.example.junior.entity.UserRoom;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
 * @Description: DO类和DTO类转换
@@ -31,5 +35,32 @@ public interface ChatRoomMapping {
     * @Date: 2023/6/12
     */
     ChatRoomDTO chatRoomToChatRoomDTO(ChatRoom chatRoom);
+
+    /**
+    * 将多个ChatRoom类转换成多个ChatRoomDTO类
+    * @param chatRooms:  chatRooms
+    * @return: java.util.List<com.example.junior.dto.ChatRoomDTO>
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    List<ChatRoomDTO> chatRoomDTOListToChatRoomList(List<ChatRoom> chatRooms);
+
+    /**
+    * 将UserRoomDTO转换为UserRoom类
+    * @param userRoomDTO:  userRoomDTO
+    * @return: com.example.junior.entity.UserRoom
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    UserRoom userRoomDTOToUserRoom(UserRoomDTO userRoomDTO);
+
+    /**
+    * 将UserRoom转换为UserRoomDTO类
+    * @param userRoom:  userRoom
+    * @return: com.example.junior.dto.UserRoomDTO
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    UserRoomDTO userRoomTOUserRoomDTO(UserRoom userRoom);
 
 }

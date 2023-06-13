@@ -32,7 +32,7 @@
             id = #{id}
     </update>
 
-    <select id="selectPersonByPage" resultType="com.example.junior.entity.Person">
+    <select id="selectPersonByPage" resultType="Person">
         select *
         from person
     </select>

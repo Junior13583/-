@@ -8,13 +8,22 @@
         (roomName, creator)
     </sql>
 
-    <insert id="insertChatRoom" parameterType="ChatRoom">
-        insert into chatroom
+    <insert id="insertChatRoom" parameterType="ChatRoom" useGeneratedKeys="true" keyProperty="roomId">
+        insert into room
             <include refid="InsertChatRoomColum"></include>
         values
             (#{roomName}, #{creator});
-
     </insert>
+
+    <insert id="insertUserRoom" parameterType="UserRoom" useGeneratedKeys="true" keyProperty="id">
+        insert into user_room (userIp, roomId, createTime) VALUES (#{userIp}, #{roomId}, #{createTime})
+    </insert>
+
+    <delete id="deleteUserRoom" parameterType="UserRoom">
+        delete
+        from user_room
+        where roomId=#{roomId} and userIp=#{userIp};
+    </delete>
 
     <resultMap id="ChatRoomMap" type="ChatRoom">
         <result property="roomId" column="roomId"/>
@@ -22,8 +31,24 @@
         <result property="creator" column="creator"/>
     </resultMap>
 
-    <select id="queryChatRoom" resultMap="ChatRoomMap">
+    <select id="queryChatRoom" resultType="ChatRoom">
         select *
-        from chatroom ;
+        from room where roomName=#{roomName};
+    </select>
+
+    <select id="queryUserRoom" resultType="UserRoom">
+        select *
+        from user_room where userIp=#{ip} and roomId=#{roomId};
+    </select>
+
+    <resultMap id="UserRoomMap" type="UserRoom">
+        <result property="userIp" column="userIp"/>
+        <result property="roomName" column="roomName"/>
+        <result property="createTime" column="createTime"/>
+    </resultMap>
+
+    <select id="queryUserRoomByIp" resultMap="UserRoomMap">
+        select u.userIp, r.roomName, u.createTime
+        from user_room u left join room r on u.roomId = r.roomId where u.userIp=#{ip};
     </select>
 </mapper>

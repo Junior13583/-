@@ -77,7 +77,7 @@ public class WebSocketServer {
             sessionList.forEach(sessionItem -> {
                 String clientIp = sessionItem.getUserProperties().get("ip").toString();
                 // 给除了自己的所有用户发送消息
-                if (clientIp.equals(currentIp)) {
+                if (!clientIp.equals(currentIp)) {
                     try {
                         // 转换为json字符串
                         String jsonMessage = new ObjectMapper().writeValueAsString(ResponseDataVO.customize(200, currentIp, message));
