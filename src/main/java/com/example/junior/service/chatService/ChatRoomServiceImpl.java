@@ -2,11 +2,14 @@ package com.example.junior.service.chatService;
 
 import com.example.junior.dto.ChatRoomDTO;
 import com.example.junior.dto.UserRoomDTO;
+import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
 import com.example.junior.entity.UserRoom;
 import com.example.junior.mapStruct.ChatRoomMapping;
 import com.example.junior.mapper.ChatRoomMapper;
 import com.example.junior.vo.ResponseDataVO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -113,6 +117,41 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
 
         return res;
+    }
+
+    @Override
+    public PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String ip) {
+
+        // 根据房间名获取房间id
+        List<ChatRoom> queryChatRoom = chatRoomMapper.queryChatRoom(roomName);
+
+        // 创建page类
+        PageHelper.startPage(pageIndex, 12);
+        // 存在聊天室
+        if (!queryChatRoom.isEmpty()) {
+            Integer roomId = queryChatRoom.get(0).getRoomId();
+
+            List<ChatMsg> chatMsgList = chatRoomMapper.queryMsg(roomId);
+            PageInfo<ChatMsg> chatMsgPageInfo = new PageInfo<>(chatMsgList);
+
+            // 根据用户ip将查询的数据分为自己发送和其他人发送
+            List<ChatMsg> newChatMsgList = chatMsgList.stream().peek(chatMsg -> {
+                if (chatMsg.getSender().equals(ip)) {
+                    chatMsg.setPosition("right");
+                }else {
+                    chatMsg.setPosition("left");
+                }
+            }).collect(Collectors.toList());
+
+            chatMsgPageInfo.setList(newChatMsgList);
+            //  先构建 PageInfo 实例，保存页码相关参数
+            return chatMsgPageInfo;
+        }else {
+            return new PageInfo<>();
+        }
+
+
+
     }
 
 

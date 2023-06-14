@@ -2,8 +2,10 @@ package com.example.junior.controller;
 
 import com.example.junior.dto.ChatRoomDTO;
 import com.example.junior.dto.UserRoomDTO;
+import com.example.junior.entity.ChatMsg;
 import com.example.junior.service.chatService.ChatRoomServiceImpl;
 import com.example.junior.vo.ResponseDataVO;
+import com.github.pagehelper.PageInfo;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -51,6 +53,14 @@ public class ChatRoomController {
         String ip = ipInfo(request);
 
         return chatRoomService.deleteUserRoom(roomName, ip);
+    }
+
+    @PostMapping("/loadingMsg")
+    @ResponseBody
+    public ResponseDataVO loadingMsg(HttpServletRequest request, @RequestParam String roomName, @RequestParam Integer pageIndex) {
+        String ip = ipInfo(request);
+        PageInfo<ChatMsg> pageInfo = chatRoomService.queryMsg(pageIndex, roomName, ip);
+        return ResponseDataVO.success(pageInfo);
     }
 
     public String ipInfo(HttpServletRequest request) {

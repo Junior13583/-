@@ -4,6 +4,7 @@ var fileInput = `<div class="file-input" tabindex="0"></div>`;
 var fileArray = [];
 // 全局已发送文件数组，保存已发送的文件，用于当文件发送失败时进行重新发送
 var sendFileArray = [];
+var msgPageIndex = 1;
 
 let ws = null;
 function connect(room) {
@@ -54,7 +55,7 @@ $.ajax({
                                 <div class="chat-title">${data.roomName}</div>
                                 <div class="chat-bottom">
                                     <div class="chat-time">${formattedDatetime}</div>
-                                    <div class="chat-num">0条对话</div>
+                                    <div class="chat-num">0 条对话</div>
                                 </div>
                             </div>`);
             })
@@ -83,7 +84,18 @@ function selectChatRoom(selectDom) {
     let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
-
+    $('.right-chatRoom').empty();
+    // 切换聊天室将页码置为1
+    msgPageIndex = 1;
+    let formData = new FormData();
+    formData.append("pageIndex", msgPageIndex);
+    formData.append("roomName", chatTitle);
+    loadingMsg(formData, $(selectDom).find('.chat-num')[0]);
+    msgPageIndex++;
+    // 添加后滚动条长度
+    let afterScrollLength = $('.right-chatRoom').prop('scrollHeight');
+    // 将滚动条滚动到没添加前的位置
+    $('.right-chatRoom').scrollTop(afterScrollLength)
     connect(chatTitle);
 }
 
@@ -169,7 +181,7 @@ function addChat() {
                                 <div class="chat-title">${chatRoom}</div>
                                 <div class="chat-bottom">
                                     <div class="chat-time">2023-06-29 09:45</div>
-                                    <div class="chat-num">0条对话</div>
+                                    <div class="chat-num">0 条对话</div>
                                 </div>
                             </div>`);
                     $('.model-input').val("");
@@ -773,21 +785,48 @@ $(document).on('keydown', '.file-input', function (e) {
     }
 })
 
+function loadingMsg(formData, dom) {
+    $.ajax({
+        url: 'loadingMsg',
+        type: 'post',
+        data: formData,
+        async: false,
+        contentType: false,
+        processData: false,
+        success:function (res) {
+            if (res.code === 200) {
+                console.log(res.data)
+                if (dom != null) {
+                    $(dom).text(res.data.total + ' 条对话');
+                }
+                // 添加聊天气泡
+                res.data.list.forEach(data => {
+                    drawBubble(data.position, 'head', data.sender, data.content, data.msgType, '')
+                });
+            }
+        },
+        error: function (res) {
+
+        }
+
+    })
+}
+
 $('.right-chatRoom').scroll(function () {
     // todo 向后台拉取历史消息
-    let msgArray = new Array();
-    msgArray.push({horizontal: 'left',vertical: 'head', user: '10.197.24.79',  sendMsg: '<div class="send-img text"></div>', sendType: 'text', file: ''})
-    msgArray.push({horizontal: 'right',vertical: 'head', user: '10.197.24.79', sendMsg: '开玩笑，我超勇的好不好！', sendType: 'text', file: ''})
-    msgArray.push({horizontal: 'left',vertical: 'head', user: '10.197.24.79', sendMsg: '让我看看你发育正常不正常！', sendType: 'text', file: ''})
-    msgArray.push({horizontal: 'right',vertical: 'head', user: '10.197.24.79', sendMsg: '不要啦，杰哥，你干嘛啊！', sendType: 'text', file: ''})
-
-    let res = msgArray.reverse();
+    let roomName = $('.right-title').text();
+    let formData = new FormData();
+    // 添加前滚动条长度
+    let beforeScrollLength = $(this).prop('scrollHeight');
+    let allMsgNum = 0;
     if ($(this).scrollTop() === 0) {
-        // 添加前滚动条长度
-        let beforeScrollLength = $(this).prop('scrollHeight');
-        for (let i = 0; i<res.length; i++) {
-            drawBubble(res[i].horizontal, res[i].vertical, res[i].user, res[i].sendMsg, res[i].sendType, res[i].file)
-        }
+
+        formData.append("pageIndex", msgPageIndex);
+        formData.append("roomName", roomName);
+        loadingMsg(formData, null);
+        // 加载完一页之后自动跳转到下一页
+        msgPageIndex++;
+
         // 添加后滚动条长度
         let afterScrollLength = $(this).prop('scrollHeight');
         // 将滚动条滚动到没添加前的位置

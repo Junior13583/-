@@ -1,7 +1,9 @@
 package com.example.junior.mapper;
 
+import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
 import com.example.junior.entity.UserRoom;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import java.util.List;
 * @Author: Junior
 * @Date: 2023/6/12
 */
+@Repository
 public interface ChatRoomMapper {
 
     /**
@@ -66,5 +69,24 @@ public interface ChatRoomMapper {
     * @Date: 2023/6/13
     */
     void deleteUserRoom(UserRoom userRoom);
+
+    /**
+    * 将聊天室的消息保存起来
+    * @param chatMsg:  chatMsg
+    * @return: void
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    void insertMsg(ChatMsg chatMsg);
+
+    /**
+    * 根据房间id和用户ip获取该房间所有聊天记录
+    * @param roomId:  roomId
+	* @param ip:  ip
+    * @return: java.util.List<com.example.junior.entity.ChatMsg>
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    List<ChatMsg> queryMsg(Integer roomId);
 
 }

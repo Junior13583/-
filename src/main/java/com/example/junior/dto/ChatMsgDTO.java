@@ -25,4 +25,5 @@ public class ChatMsgDTO {
     private String msgType;
     private String content;
     private LocalDateTime sendTime;
+    private String position;
 }

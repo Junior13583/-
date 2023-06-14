@@ -2,8 +2,10 @@ package com.example.junior.service.chatService;
 
 import com.example.junior.dto.ChatRoomDTO;
 import com.example.junior.dto.UserRoomDTO;
+import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
 import com.example.junior.vo.ResponseDataVO;
+import com.github.pagehelper.PageInfo;
 
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +45,16 @@ public interface ChatRoomService {
     * @Date: 2023/6/13
     */
     ResponseDataVO deleteUserRoom(String roomName, String ip);
+
+    /**
+    * 根据房间名字和用户ip查询所有消息
+    * @param roomName:  roomName
+	* @param ip:  ip
+    * @return: com.example.junior.vo.ResponseDataVO
+    * @Author: Junior
+    * @Date: 2023/6/13
+    */
+    PageInfo queryMsg(Integer pageIndex, String roomName, String ip);
 
 
 

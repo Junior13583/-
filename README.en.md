@@ -1,7 +1,7 @@
-# 多人聊天室
+# webStarter
 
 #### Description
-基于springboot的多人聊天室
+该项目做为web模板，集成了接口监控服务，同时拥有全局异常处理，对接口响应数据进行了封装等一系列常用功能。为后续开发缩减了工作量
 
 #### Software Architecture
 Software architecture description
