@@ -1,19 +1,26 @@
 package com.example.junior.controller;
 
-import com.example.junior.dto.ChatRoomDTO;
-import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.service.chatService.ChatRoomServiceImpl;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.core.io.Resource;
 
-import javax.annotation.Resource;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @Description: 聊天室控制层
@@ -24,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 @Validated
 public class ChatRoomController {
 
-    @Resource
+    @Autowired
     private ChatRoomServiceImpl chatRoomService;
+
+
 
     @GetMapping("/")
     public ModelAndView index() {
@@ -53,6 +62,23 @@ public class ChatRoomController {
         String ip = ipInfo(request);
 
         return chatRoomService.deleteUserRoom(roomName, ip);
+    }
+
+    @PostMapping("/uploadFile")
+    @ResponseBody
+    public ResponseDataVO uploadFile(HttpServletRequest request, @RequestParam String roomName,
+                                     @RequestParam MultipartFile file, @RequestParam Integer index) throws IOException {
+        String ip = ipInfo(request);
+        return chatRoomService.uploadFile(roomName, ip, file, index);
+    }
+
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String roomName) {
+        Resource resource = chatRoomService.downloadFile(roomName, fileName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 
     @PostMapping("/loadingMsg")

@@ -6,7 +6,10 @@ import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -47,14 +50,38 @@ public interface ChatRoomService {
     ResponseDataVO deleteUserRoom(String roomName, String ip);
 
     /**
-    * 根据房间名字和用户ip查询所有消息
+    * 上传文件
     * @param roomName:  roomName
-	* @param ip:  ip
+     * @param ip:  ip
+     * @param file:  file
+     * @param index:  前端发送的文件位置，需要再次返回前端用于定位作用
+    * @exception IOException:
     * @return: com.example.junior.vo.ResponseDataVO
     * @Author: Junior
-    * @Date: 2023/6/13
+    * @Date: 2023/6/14
     */
-    PageInfo queryMsg(Integer pageIndex, String roomName, String ip);
+    ResponseDataVO uploadFile(String roomName, String ip, MultipartFile file, Integer index) throws IOException;
+
+    /**
+    * 文件下载接口
+    * @param roomName:  roomName
+	* @param fileName:  fileName
+    * @return: com.example.junior.vo.ResponseDataVO
+    * @Author: Junior
+    * @Date: 2023/6/14
+    */
+    Resource downloadFile(String roomName, String fileName);
+
+    /**
+    * 根据房间名字和用户ip查询所有消息
+    * @param pageIndex:  pageIndex
+     * @param roomName:  roomName
+     * @param ip:  ip
+    * @return: com.github.pagehelper.PageInfo<com.example.junior.entity.ChatMsg>
+    * @Author: Junior
+    * @Date: 2023/6/14
+    */
+    PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String ip);
 
 
 

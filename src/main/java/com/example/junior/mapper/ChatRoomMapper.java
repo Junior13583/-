@@ -82,7 +82,6 @@ public interface ChatRoomMapper {
     /**
     * 根据房间id和用户ip获取该房间所有聊天记录
     * @param roomId:  roomId
-	* @param ip:  ip
     * @return: java.util.List<com.example.junior.entity.ChatMsg>
     * @Author: Junior
     * @Date: 2023/6/13

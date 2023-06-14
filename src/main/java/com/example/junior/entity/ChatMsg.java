@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
 * @Description: 消息实体类
@@ -25,5 +26,11 @@ public class ChatMsg {
     private String msgType;
     private String content;
     private LocalDateTime sendTime;
+    private String filename;
+    private Long filesize;
+    /**
+     * 附加信息
+     */
     private String position;
+
 }

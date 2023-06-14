@@ -25,5 +25,10 @@ public class ChatMsgDTO {
     private String msgType;
     private String content;
     private LocalDateTime sendTime;
+    private String filename;
+    private String filesize;
+    /**
+     * 附加信息
+     */
     private String position;
 }

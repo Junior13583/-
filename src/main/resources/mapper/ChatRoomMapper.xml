@@ -20,8 +20,8 @@
     </insert>
 
     <insert id="insertMsg" parameterType="ChatMsg" useGeneratedKeys="true" keyProperty="msgId">
-        insert into chat_msg (roomId, sender, msgType, content, sendTime)
-        values (#{roomId}, #{sender}, #{msgType}, #{content}, #{sendTime});
+        insert into chat_msg (roomId, sender, msgType, content, filename, filesize, sendTime)
+        values (#{roomId}, #{sender}, #{msgType}, #{content}, #{filename}, #{filesize}, #{sendTime});
     </insert>
 
     <delete id="deleteUserRoom" parameterType="UserRoom">
@@ -58,7 +58,7 @@
     </select>
 
     <select id="queryMsg" resultType="ChatMsg">
-        select msgId, roomId, sender, msgType, content, sendTime
+        select msgId, roomId, sender, msgType, content, filename, filesize, sendTime
         from chat_msg where roomId=#{roomId} order by msgId desc
     </select>
     <select id="queryMsg_COUNT" resultType="Long">

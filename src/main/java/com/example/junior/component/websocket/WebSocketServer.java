@@ -8,7 +8,7 @@ import com.example.junior.vo.ResponseDataVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.stylesheets.LinkStyle;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.websocket.*;
@@ -51,7 +51,6 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("room") String room) {
         //
         try {
-            // todo 验证当前聊天室是否存在
 
             // 如果当前聊天室不在Map中，就添加
             SESSION_MAP.computeIfAbsent(room, k -> new ArrayList<>());
@@ -111,8 +110,12 @@ public class WebSocketServer {
                     // 给除了自己的所有用户发送消息
                     if (!clientIp.equals(currentIp)) {
                         try {
+                            Map<String, Object> data = new HashMap<>(10);
+                            data.put("sender", currentIp);
+                            data.put("content", message);
+                            data.put("type", "text");
                             // 转换为json字符串
-                            String jsonMessage = new ObjectMapper().writeValueAsString(ResponseDataVO.customize(200, currentIp, message));
+                            String jsonMessage = new ObjectMapper().writeValueAsString(ResponseDataVO.customize(200, "成功", data));
                             sessionItem.getBasicRemote().sendText(jsonMessage);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -130,6 +133,81 @@ public class WebSocketServer {
     public void onError (Session session, Throwable throwable) {
         log.error("出现错误");
         throwable.printStackTrace();
+    }
+
+    public void broadcastMsg(String roomName, String ip, MultipartFile file) {
+        // 获取当前房间的所有Client
+        List<Session> sessionList = SESSION_MAP.get(roomName);
+
+        log.info("用户【" + ip + "】：在---> 【" + roomName + "】发送一份文件：" + file.getOriginalFilename());
+        // 判断聊天室是否存在
+        List<ChatRoom> chatRooms = chatRoomMapper.queryChatRoom(roomName);
+
+        if (!chatRooms.isEmpty()) {
+            // 获取当前时间
+            LocalDateTime nowTime = LocalDateTime.now();
+
+            // 获取文件类型
+            String fileType = getCustomizeFileType(file.getContentType());
+
+            // 拼接下载链接
+            String downloadUrl = "/download?fileName=" + file.getOriginalFilename() + "&roomName=" + roomName;
+            // 将消息存入数据库
+            Integer roomId = chatRooms.get(0).getRoomId();
+            ChatMsg chatMsg = ChatMsg.builder()
+                    .roomId(roomId)
+                    .sender(ip)
+                    .msgType(fileType)
+                    .content(downloadUrl)
+                    .filename(file.getOriginalFilename())
+                    .filesize(file.getSize())
+                    .sendTime(nowTime)
+                    .build();
+            chatRoomMapper.insertMsg(chatMsg);
+
+            // 将消息广播给其他客户端
+            if (sessionList != null) {
+                sessionList.forEach(sessionItem -> {
+                    String clientIp = sessionItem.getUserProperties().get("ip").toString();
+                    // 给除了自己的所有用户发送消息
+                    if (!clientIp.equals(ip)) {
+                        try {
+                            Map<String, Object> data = new HashMap<>(10);
+                            data.put("sender", ip);
+                            data.put("content", downloadUrl);
+                            data.put("type", fileType);
+                            data.put("name", file.getOriginalFilename());
+                            data.put("size", file.getSize());
+                            // 转换为json字符串
+                            String jsonMessage = new ObjectMapper().writeValueAsString(ResponseDataVO.customize(200, "成功", data));
+                            sessionItem.getBasicRemote().sendText(jsonMessage);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        }else {
+            log.error("用户【" + ip + "】：在一个不存在的---> 【" + roomName + "】发送一份文件：" + file.getOriginalFilename());
+        }
+    }
+
+    /**
+    * 根据文件类型获取自定义的文件类型
+    * @param fileType:  fileType
+    * @return: java.lang.String
+    * @Author: Junior
+    * @Date: 2023/6/14
+    */
+    public String getCustomizeFileType(String fileType) {
+
+        String suffixName = "image/";
+        if (fileType != null && fileType.startsWith(suffixName)){
+            fileType = "image";
+        }else {
+            fileType = "others";
+        }
+        return fileType;
     }
 
 }

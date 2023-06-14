@@ -1,7 +1,7 @@
 package com.example.junior.service.chatService;
 
+import com.example.junior.component.websocket.WebSocketServer;
 import com.example.junior.dto.ChatRoomDTO;
-import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
 import com.example.junior.entity.UserRoom;
@@ -11,14 +11,21 @@ import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
 * @Description: 聊天室服務層实现类
@@ -29,8 +36,14 @@ import java.util.stream.Stream;
 @Slf4j
 public class ChatRoomServiceImpl implements ChatRoomService{
 
-    @Resource
+    @Autowired
     private ChatRoomMapper chatRoomMapper;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
+
+    @Value("${spring.servlet.multipart.location}")
+    private String uploadPath;
 
     @Override
     public ResponseDataVO getUserInfo(String ip) {
@@ -120,6 +133,43 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     }
 
     @Override
+    public ResponseDataVO uploadFile(String roomName, String ip, MultipartFile file, Integer index) throws IOException {
+
+        String filename = file.getOriginalFilename();
+        Path roomPath = Paths.get(uploadPath, roomName);
+        try {
+            if (!Files.exists(roomPath)) {
+                Files.createDirectories(roomPath);
+            }
+            // 保存文件到服务器
+            file.transferTo(new File(Paths.get(uploadPath, roomName, filename).toString()));
+
+            // 通过websocket向其他客户端发送消息
+            webSocketServer.broadcastMsg(roomName, ip, file);
+            return ResponseDataVO.success(index);
+
+        } catch (Throwable throwable) {
+            log.error("文件发送失败");
+            return ResponseDataVO.customize(404, "失败", index);
+        }
+
+    }
+
+    @Override
+    public Resource downloadFile(String roomName, String fileName) {
+        Path filePath = Paths.get(uploadPath, roomName).resolve(fileName).normalize();
+        File file = filePath.toFile();
+
+        Resource resource = new FileSystemResource(file);
+
+        if (!resource.exists()) {
+            throw new RuntimeException("文件已经失效");
+        }
+
+        return resource;
+    }
+
+    @Override
     public PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String ip) {
 
         // 根据房间名获取房间id
@@ -136,11 +186,14 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
             // 根据用户ip将查询的数据分为自己发送和其他人发送
             List<ChatMsg> newChatMsgList = chatMsgList.stream().peek(chatMsg -> {
+                // 添加聊天气泡位置
                 if (chatMsg.getSender().equals(ip)) {
                     chatMsg.setPosition("right");
                 }else {
                     chatMsg.setPosition("left");
                 }
+
+
             }).collect(Collectors.toList());
 
             chatMsgPageInfo.setList(newChatMsgList);
