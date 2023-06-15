@@ -6,6 +6,24 @@ var fileArray = [];
 var sendFileArray = [];
 var msgPageIndex = 1;
 
+var curDate = new Date();  //获取当前时间
+var year = curDate.getFullYear();  //获取年份
+var month = curDate.getMonth() + 1;  //获取月份
+var day = curDate.getDate();  //获取日期
+var hour = curDate.getHours();  //获取小时
+var minute = curDate.getMinutes();  //获取分钟
+var second = curDate.getSeconds();  //获取秒钟
+
+//调整格式
+month = month < 10 ? "0" + month : month;
+day = day < 10 ? "0" + day : day;
+hour = hour < 10 ? "0" + hour : hour;
+minute = minute < 10 ? "0" + minute : minute;
+second = second < 10 ? "0" + second : second;
+
+var datetime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+$('.user-info').text(`最近上线时间：${datetime}`)
+
 let ws = null;
 function connect(room) {
     if (ws != null) {
@@ -747,6 +765,10 @@ function sendFile() {
     // 点击发送之后，将输入的文件清空
     fileArray = [];
     $('.file-input').empty();
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function send() {

@@ -1,6 +1,9 @@
 package com.example.junior.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.example.junior.entity.ChatMsg;
+import com.example.junior.handle.sentinelHandler.MyBlockException;
+import com.example.junior.handle.sentinelHandler.MyFallback;
 import com.example.junior.service.chatService.ChatRoomServiceImpl;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
@@ -37,6 +40,8 @@ public class ChatRoomController {
 
 
     @GetMapping("/")
+    @SentinelResource(value = "index", defaultFallback = "allFallback", fallbackClass = {MyFallback.class},
+            blockHandler = "allHandlerException", blockHandlerClass = {MyBlockException.class})
     public ModelAndView index() {
         return new ModelAndView("index");
     }
@@ -74,10 +79,10 @@ public class ChatRoomController {
 
     @GetMapping("/download")
     @ResponseBody
-    public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String roomName) {
+    public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String roomName, @RequestParam String alias) {
         Resource resource = chatRoomService.downloadFile(roomName, fileName);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + alias + "\"")
                 .body(resource);
     }
 

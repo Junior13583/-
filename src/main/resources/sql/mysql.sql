@@ -10,28 +10,63 @@ Target Server Type    : MYSQL
 Target Server Version : 80028
 File Encoding         : 65001
 
-Date: 2023-03-13 17:21:46
+Date: 2023-06-14 17:27:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for person
+-- Table structure for chat_msg
 -- ----------------------------
-DROP TABLE IF EXISTS `person`;
-CREATE TABLE `person` (
-                          `id` int NOT NULL AUTO_INCREMENT,
-                          `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-                          `password` varchar(255) DEFAULT NULL,
-                          `age` int DEFAULT NULL,
-                          `sex` varchar(255) DEFAULT NULL,
-                          `phoneNumber` bigint DEFAULT NULL,
-                          `address` varchar(255) DEFAULT NULL,
-                          PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
+DROP TABLE IF EXISTS `chat_msg`;
+CREATE TABLE `chat_msg` (
+                            `msgId` int NOT NULL AUTO_INCREMENT,
+                            `roomId` int NOT NULL,
+                            `sender` varchar(255) NOT NULL,
+                            `msgType` varchar(255) NOT NULL,
+                            `content` text,
+                            `filename` varchar(800) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+                            `filesize` int DEFAULT NULL,
+                            `sendTime` datetime NOT NULL,
+                            PRIMARY KEY (`msgId`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
--- Records of person
+-- Records of chat_msg
 -- ----------------------------
-INSERT INTO `person` VALUES ('1', '小明', '123456', '12', '男', '12345679890', '上海');
-INSERT INTO `person` VALUES ('2', '小明', '123456', '12', '男', '12345679890', '深圳');
+
+
+-- ----------------------------
+-- Table structure for room
+-- ----------------------------
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room` (
+                        `roomId` int NOT NULL AUTO_INCREMENT,
+                        `roomName` varchar(255) NOT NULL,
+                        `creator` varchar(255) NOT NULL,
+                        PRIMARY KEY (`roomId`)
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8mb3;
+
+-- ----------------------------
+-- Records of room
+-- ----------------------------
+INSERT INTO `room` VALUES ('1', 'Junior 的聊天室', 'admin');
+
+
+-- ----------------------------
+-- Table structure for user_room
+-- ----------------------------
+DROP TABLE IF EXISTS `user_room`;
+CREATE TABLE `user_room` (
+                             `id` int NOT NULL AUTO_INCREMENT,
+                             `userIp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                             `roomId` int NOT NULL,
+                             `createTime` datetime NOT NULL,
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+
+-- ----------------------------
+-- Records of user_room
+-- ----------------------------
+
+

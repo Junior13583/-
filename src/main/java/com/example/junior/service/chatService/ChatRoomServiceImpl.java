@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -141,15 +143,19 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             if (!Files.exists(roomPath)) {
                 Files.createDirectories(roomPath);
             }
+
+            // 为了区分同名文件，所有文件保存使用当前时间戳作为文件名
+            String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.') + 1);
+            String fileName = Long.toString(Instant.now().toEpochMilli()) + '.' + suffix;
             // 保存文件到服务器
-            file.transferTo(new File(Paths.get(uploadPath, roomName, filename).toString()));
+            file.transferTo(new File(Paths.get(uploadPath, roomName, fileName).toString()));
 
             // 通过websocket向其他客户端发送消息
-            webSocketServer.broadcastMsg(roomName, ip, file);
+            webSocketServer.broadcastMsg(roomName, ip, file, fileName);
             return ResponseDataVO.success(index);
 
         } catch (Throwable throwable) {
-            log.error("文件发送失败");
+            log.error("文件发送失败" + throwable.toString());
             return ResponseDataVO.customize(404, "失败", index);
         }
 

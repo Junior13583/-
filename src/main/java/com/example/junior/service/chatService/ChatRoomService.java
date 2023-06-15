@@ -1,17 +1,12 @@
 package com.example.junior.service.chatService;
 
-import com.example.junior.dto.ChatRoomDTO;
-import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.entity.ChatMsg;
-import com.example.junior.entity.ChatRoom;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
 
 /**
 * @Description: 聊天室服務層
@@ -55,7 +50,7 @@ public interface ChatRoomService {
      * @param ip:  ip
      * @param file:  file
      * @param index:  前端发送的文件位置，需要再次返回前端用于定位作用
-    * @exception IOException:
+    * @exception IOException: io异常
     * @return: com.example.junior.vo.ResponseDataVO
     * @Author: Junior
     * @Date: 2023/6/14
@@ -65,7 +60,7 @@ public interface ChatRoomService {
     /**
     * 文件下载接口
     * @param roomName:  roomName
-	* @param fileName:  fileName
+	* @param fileName:  文件别名
     * @return: com.example.junior.vo.ResponseDataVO
     * @Author: Junior
     * @Date: 2023/6/14

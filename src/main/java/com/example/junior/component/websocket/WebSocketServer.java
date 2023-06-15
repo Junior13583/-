@@ -135,7 +135,7 @@ public class WebSocketServer {
         throwable.printStackTrace();
     }
 
-    public void broadcastMsg(String roomName, String ip, MultipartFile file) {
+    public void broadcastMsg(String roomName, String ip, MultipartFile file, String fileName) {
         // 获取当前房间的所有Client
         List<Session> sessionList = SESSION_MAP.get(roomName);
 
@@ -149,9 +149,11 @@ public class WebSocketServer {
 
             // 获取文件类型
             String fileType = getCustomizeFileType(file.getContentType());
+            // 获取文件真名
+            String realName = file.getOriginalFilename();
 
             // 拼接下载链接
-            String downloadUrl = "/download?fileName=" + file.getOriginalFilename() + "&roomName=" + roomName;
+            String downloadUrl = "/download?fileName=" + fileName + "&roomName=" + roomName + "&alias=" + realName;
             // 将消息存入数据库
             Integer roomId = chatRooms.get(0).getRoomId();
             ChatMsg chatMsg = ChatMsg.builder()
@@ -159,7 +161,7 @@ public class WebSocketServer {
                     .sender(ip)
                     .msgType(fileType)
                     .content(downloadUrl)
-                    .filename(file.getOriginalFilename())
+                    .filename(realName)
                     .filesize(file.getSize())
                     .sendTime(nowTime)
                     .build();

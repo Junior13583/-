@@ -6,7 +6,12 @@ my-thread-pool:
   threadNamePrefix: springThreadPool-
   waitForTasksToCompleteOnShutdown: true
 
+server:
+  port: 1234
+
 spring:
+  application:
+    name: chat-room
   servlet:
     multipart:
       location: D:/chatroom-files
@@ -20,8 +25,10 @@ spring:
   cloud:
     sentinel:
       transport:
-        port: 8079
         dashboard: localhost:3333
+        port: 8720
+        heartbeat-interval-ms: 500
+      eager: true
 
 
 management:
