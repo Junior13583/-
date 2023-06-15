@@ -29,7 +29,7 @@ function connect(room) {
     if (ws != null) {
         ws.close(1000, '切换聊天室')
     }
-    ws = new WebSocket(`ws:10.197.24.79:8080/websocket/${room}`);
+    ws = new WebSocket(`ws:10.197.24.79:1234/websocket/${room}`);
 
     ws.onopen = function() {
         console.log(`聊天室-->${room}: 连接已经建立`);
