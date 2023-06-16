@@ -25,6 +25,10 @@ second = second < 10 ? "0" + second : second;
 var datetime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
 $('.user-info').text(`最近上线时间：${datetime}`)
 
+cocoMessage.config({
+    duration: 2000,
+});
+
 let ws = null;
 function connect(room) {
     if (ws != null) {
@@ -34,7 +38,7 @@ function connect(room) {
 
     ws.onopen = function() {
         console.log(`聊天室-->${room}: 连接已经建立`);
-
+        cocoMessage.success(2000, `聊天室-->${room}: 连接已经建立`)
     };
 
     ws.onmessage = function(evt) {
@@ -42,17 +46,20 @@ function connect(room) {
     };
 
     ws.onerror = function() {
-        console.log('onerror')
+        console.log('websocket 服务器异常')
+        cocoMessage.error(2000, "websocket 服务器异常")
     };
 
     ws.onclose = function(evt) {
         if (evt.reason === '切换聊天室') {
             console.log(`聊天室-->${room}: 关闭当前连接`);
+            // cocoMessage.info(1000, `聊天室-->${room}: 关闭当前连接`)
         } else {
             setTimeout(function() {
                 console.log(`聊天室-->${room}: 正在尝试重新连接...`);
+                cocoMessage.success(2000, `聊天室-->${room}: 正在尝试重新连接...`)
                 connect(room);
-            }, 1000);
+            }, 1500);
         }
     };
 }
@@ -146,16 +153,16 @@ function delChatRoom(isCreate, dom) {
             processData: false,
             success: function (res) {
                 if (res.code === 200) {
-                    // alert(res.data);
+                    cocoMessage.success(2000, res.data)
                     dom.detach();
                 }else if(res.code === 201) {
-                    alert(res.data)
+                    cocoMessage.info(2000, res.data)
                 }else {
-                    alert(res.msg)
+                    cocoMessage.error(2000, res.msg)
                 }
             },
             error:function (res) {
-
+                cocoMessage.error(2000, res)
             }
         })
 
@@ -195,7 +202,7 @@ function addChat() {
             processData: false,
             success: function (res) {
                 if (res.code === 200) {
-                    // alert(res.data);
+                    cocoMessage.success(2000, res.data)
                     $('.item-box').append(`<div class="chat-item">
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${chatRoom}</div>
@@ -206,18 +213,18 @@ function addChat() {
                             </div>`);
                     $('.model-input').val("");
                 }else if(res.code === 201) {
-                    alert(res.data)
+                    cocoMessage.info(2000, res.data)
                 }else {
-                    alert(res.msg)
+                    cocoMessage.error(2000, res.msg)
                 }
             },
             error: function (res) {
-
+                cocoMessage.error(2000, res)
             },
         })
 
     }else {
-        alert("聊天室不能为空！！")
+        cocoMessage.warning(2000, "聊天室不能为空！！")
     }
 
 }
@@ -704,7 +711,8 @@ function sendMsg() {
     websocketSend(sendMsg, thisBubble);
 
     // 发消息后滚动到最底部
-    $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
+    $('.right-chatRoom').animate({scrollTop:$('.right-chatRoom').prop('scrollHeight')}, 'slow');
+    // $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
 }
 
 function ajaxFile(formData, bubbles) {
@@ -760,7 +768,8 @@ function sendFile() {
 
             index++;
             // 发消息后滚动到最底部
-            $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
+            $('.right-chatRoom').animate({scrollTop:$('.right-chatRoom').prop('scrollHeight')}, 'slow');
+            // $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'));
         };
         reader.readAsDataURL(file);
     });
@@ -889,7 +898,7 @@ function acceptMsg(res) {
     let afterScrollLength = $('.right-chatRoom').prop('scrollHeight');
     // 滚动范围较小将聚焦到底部
     if (afterScrollLength - beforeScrollLength < 1000) {
-        $('.right-chatRoom').scrollTop($('.right-chatRoom').prop('scrollHeight'))
+        $('.right-chatRoom').animate({scrollTop: afterScrollLength}, 'slow');
     }
 
 
