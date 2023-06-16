@@ -41,7 +41,7 @@ public class ChatRoomController {
 
     @GetMapping("/")
     @SentinelResource(value = "index", defaultFallback = "allFallback", fallbackClass = {MyFallback.class},
-            blockHandler = "allHandlerException", blockHandlerClass = {MyBlockException.class})
+            blockHandler = "blackException", blockHandlerClass = {MyBlockException.class})
     public ModelAndView index() {
         return new ModelAndView("index");
     }

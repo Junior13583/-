@@ -74,9 +74,7 @@ $.ajax({
             $('.user-ip').text(res.data.ip);
             wsUrl = res.data.wsUrl;
             res.data.rooms.forEach(data => {
-                let datetimeArray = data.createTime;
-                let datetime = new Date(datetimeArray[0], datetimeArray[1] - 1, datetimeArray[2], datetimeArray[3], datetimeArray[4], datetimeArray[5]);  // 将数组转换为Date对象
-                let formattedDatetime = datetime.toISOString().replace('T', ' ').substr(0, 16);
+                let formattedDatetime = data.createTime.replace('T', ' ').substr(0, 16);
                 $('.item-box').append(`<div class="chat-item">
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${data.roomName}</div>

@@ -16,7 +16,7 @@
 - spring-cloud-starter-alibaba-sentinel 2021.1
 
 #### sentinel 启动方式
- > java -Dserver.port=3333 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-1.8.5.jar
+ > java -Dserver.port=3333 -jar sentinel-dashboard-1.8.5.jar
 
 #### 实用功能
 

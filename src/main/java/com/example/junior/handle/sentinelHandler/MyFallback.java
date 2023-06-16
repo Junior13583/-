@@ -1,5 +1,6 @@
 package com.example.junior.handle.sentinelHandler;
 
+import com.example.junior.handle.exceptHandler.customException.BusinessException;
 import com.example.junior.vo.ResponseDataVO;
 
 /**
@@ -8,8 +9,8 @@ import com.example.junior.vo.ResponseDataVO;
 * @Date: 2023/4/13
 */
 public class MyFallback {
-    public static ResponseDataVO allFallback() {
-        return ResponseDataVO.fail("服务器错误，稍后再试！！");
+    public static void allFallback() {
+        throw new BusinessException("服务器错误，稍后再试！！");
     }
 
     // TODO 下面可以自定义其他回调方法，注意使用 static 修饰
