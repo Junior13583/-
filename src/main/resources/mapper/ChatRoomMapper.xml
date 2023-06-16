@@ -21,7 +21,7 @@
 
     <insert id="insertMsg" parameterType="ChatMsg" useGeneratedKeys="true" keyProperty="msgId">
         insert into chat_msg (roomId, sender, msgType, content, filename, filesize, sendTime)
-        values (#{roomId}, #{sender}, #{msgType}, #{content}, #{filename}, #{filesize}, #{sendTime});
+        values (#{roomId}, #{sender}, #{msgType}, #{content,jdbcType=BLOB}, #{filename}, #{filesize}, #{sendTime});
     </insert>
 
     <delete id="deleteUserRoom" parameterType="UserRoom">

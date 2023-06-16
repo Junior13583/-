@@ -16,10 +16,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static javax.websocket.CloseReason.CloseCodes.NORMAL_CLOSURE;
@@ -135,7 +132,7 @@ public class WebSocketServer {
         throwable.printStackTrace();
     }
 
-    public void broadcastMsg(String roomName, String ip, MultipartFile file, String fileName) {
+    public void broadcastMsg(String roomName, String ip, MultipartFile file, String fileName, byte[] fileByte) throws IOException {
         // 获取当前房间的所有Client
         List<Session> sessionList = SESSION_MAP.get(roomName);
 
@@ -152,15 +149,24 @@ public class WebSocketServer {
             // 获取文件真名
             String realName = file.getOriginalFilename();
 
+            String downloadUrl = "";
             // 拼接下载链接
-            String downloadUrl = "/download?fileName=" + fileName + "&roomName=" + roomName + "&alias=" + realName;
+            if ("image".equals(fileType)) {
+                // 图片直接保存图片数据
+                String base64Image = Base64.getEncoder().encodeToString(fileByte);
+                downloadUrl = "data:" + file.getContentType() + ";base64," + base64Image;
+            }else {
+                downloadUrl = "/download?fileName=" + fileName + "&roomName=" + roomName + "&alias=" + realName;
+            }
+            final String content = downloadUrl;
+
             // 将消息存入数据库
             Integer roomId = chatRooms.get(0).getRoomId();
             ChatMsg chatMsg = ChatMsg.builder()
                     .roomId(roomId)
                     .sender(ip)
                     .msgType(fileType)
-                    .content(downloadUrl)
+                    .content(content)
                     .filename(realName)
                     .filesize(file.getSize())
                     .sendTime(nowTime)
@@ -176,7 +182,7 @@ public class WebSocketServer {
                         try {
                             Map<String, Object> data = new HashMap<>(10);
                             data.put("sender", ip);
-                            data.put("content", downloadUrl);
+                            data.put("content", content);
                             data.put("type", fileType);
                             data.put("name", file.getOriginalFilename());
                             data.put("size", file.getSize());

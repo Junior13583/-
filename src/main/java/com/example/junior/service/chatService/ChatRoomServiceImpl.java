@@ -25,7 +25,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -47,11 +49,23 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
 
+    @Value("${server.port}")
+    private String port;
+
+    @Value("${server.address}")
+    private String address;
+
     @Override
     public ResponseDataVO getUserInfo(String ip) {
         List<UserRoom> userRooms = chatRoomMapper.queryUserRoomByIp(ip);
+        Map<String, Object> map = new HashMap<>(10);
+        String wsUrl = "ws://" + address + ":"+ port + "/websocket/";
 
-        return ResponseDataVO.customize(200, ip, userRooms);
+        map.put("wsUrl", wsUrl);
+        map.put("ip", ip);
+        map.put("rooms", userRooms);
+
+        return ResponseDataVO.customize(200, "成功", map);
     }
 
     @Override
@@ -144,6 +158,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 Files.createDirectories(roomPath);
             }
 
+            // 将文件读成byte
+            byte[] fileBytes = file.getBytes();
             // 为了区分同名文件，所有文件保存使用当前时间戳作为文件名
             String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf('.') + 1);
             String fileName = Long.toString(Instant.now().toEpochMilli()) + '.' + suffix;
@@ -151,7 +167,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             file.transferTo(new File(Paths.get(uploadPath, roomName, fileName).toString()));
 
             // 通过websocket向其他客户端发送消息
-            webSocketServer.broadcastMsg(roomName, ip, file, fileName);
+            webSocketServer.broadcastMsg(roomName, ip, file, fileName, fileBytes);
             return ResponseDataVO.success(index);
 
         } catch (Throwable throwable) {

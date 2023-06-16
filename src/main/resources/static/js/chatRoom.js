@@ -5,6 +5,7 @@ var fileArray = [];
 // 全局已发送文件数组，保存已发送的文件，用于当文件发送失败时进行重新发送
 var sendFileArray = [];
 var msgPageIndex = 1;
+var wsUrl = "";
 
 var curDate = new Date();  //获取当前时间
 var year = curDate.getFullYear();  //获取年份
@@ -29,7 +30,7 @@ function connect(room) {
     if (ws != null) {
         ws.close(1000, '切换聊天室')
     }
-    ws = new WebSocket(`ws:10.197.24.79:1234/websocket/${room}`);
+    ws = new WebSocket(`${wsUrl}${room}`);
 
     ws.onopen = function() {
         console.log(`聊天室-->${room}: 连接已经建立`);
@@ -63,8 +64,9 @@ $.ajax({
     processData: false,
     success: function (res) {
         if (res.code === 200) {
-            $('.user-ip').text(res.msg);
-            res.data.forEach(data => {
+            $('.user-ip').text(res.data.ip);
+            wsUrl = res.data.wsUrl;
+            res.data.rooms.forEach(data => {
                 let datetimeArray = data.createTime;
                 let datetime = new Date(datetimeArray[0], datetimeArray[1] - 1, datetimeArray[2], datetimeArray[3], datetimeArray[4], datetimeArray[5]);  // 将数组转换为Date对象
                 let formattedDatetime = datetime.toISOString().replace('T', ' ').substr(0, 16);
@@ -737,7 +739,7 @@ function sendFile() {
         const reader = new FileReader();
         reader.onload = function (event) {
             if (file.type.indexOf("image") === 0) {
-                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', file.name));
+                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', {name: file.name}));
             } else {
                 bubbles.push(drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file));
             }
@@ -877,7 +879,7 @@ function acceptMsg(res) {
     if (dataJson.type === 'text') {
         drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, '');
     }else if (dataJson.type === 'image') {
-        drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, dataJson.name);
+        drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, {name:dataJson.name});
     }else if (dataJson.type === 'others') {
         let file = {name: dataJson.name, size: dataJson.size}
         drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, file);

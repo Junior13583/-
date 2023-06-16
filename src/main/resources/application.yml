@@ -8,6 +8,7 @@ my-thread-pool:
 
 server:
   port: 1234
+  address: 10.197.24.79
 
 spring:
   application:
@@ -26,7 +27,7 @@ spring:
     sentinel:
       transport:
         dashboard: localhost:3333
-        port: 8720
+        port: 8079
         heartbeat-interval-ms: 500
       eager: true
 
