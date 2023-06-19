@@ -7,23 +7,28 @@ var sendFileArray = [];
 var msgPageIndex = 1;
 var wsUrl = "";
 
-var curDate = new Date();  //获取当前时间
-var year = curDate.getFullYear();  //获取年份
-var month = curDate.getMonth() + 1;  //获取月份
-var day = curDate.getDate();  //获取日期
-var hour = curDate.getHours();  //获取小时
-var minute = curDate.getMinutes();  //获取分钟
-var second = curDate.getSeconds();  //获取秒钟
+function getDateTime(len=19) {
+    let curDate = new Date();  //获取当前时间
+    let year = curDate.getFullYear();  //获取年份
+    let month = curDate.getMonth() + 1;  //获取月份
+    let day = curDate.getDate();  //获取日期
+    let hour = curDate.getHours();  //获取小时
+    let minute = curDate.getMinutes();  //获取分钟
+    let second = curDate.getSeconds();  //获取秒钟
 
 //调整格式
-month = month < 10 ? "0" + month : month;
-day = day < 10 ? "0" + day : day;
-hour = hour < 10 ? "0" + hour : hour;
-minute = minute < 10 ? "0" + minute : minute;
-second = second < 10 ? "0" + second : second;
+    month = month < 10 ? "0" + month : month;
+    day = day < 10 ? "0" + day : day;
+    hour = hour < 10 ? "0" + hour : hour;
+    minute = minute < 10 ? "0" + minute : minute;
+    second = second < 10 ? "0" + second : second;
 
-var datetime = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-$('.user-info').text(`最近上线时间：${datetime}`)
+    let dataTime = (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second).substring(0, len);
+
+    return dataTime;
+}
+
+$('.user-info').text(`最近上线时间：${getDateTime()}`)
 
 cocoMessage.config({
     duration: 2000,
@@ -205,7 +210,7 @@ function addChat() {
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${chatRoom}</div>
                                 <div class="chat-bottom">
-                                    <div class="chat-time">2023-06-29 09:45</div>
+                                    <div class="chat-time">${getDateTime(16)}</div>
                                     <div class="chat-num">0 条对话</div>
                                 </div>
                             </div>`);
@@ -882,6 +887,8 @@ function acceptMsg(res) {
     let dataJson = JSON.parse(res).data;
     // 添加前滚动条位置
     let beforeScrollLength = $('.right-chatRoom').scrollTop();
+    // 通知提示
+    suportNotify(dataJson.sender, dataJson.content, dataJson.type)
     // 绘制聊天气泡
     if (dataJson.type === 'text') {
         drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, '');
@@ -908,4 +915,46 @@ $(document).on('click', '.bubble-file', function () {
 });
 
 
+//判断浏览器是否支持Web Notifications API
+function suportNotify(title, msg, type) {
+    if (window.Notification) {
+        // 支持
+        console.log("支持" + "Web Notifications API");
+        //如果支持Web Notifications API，再判断浏览器是否支持弹出实例
+        showMess(title, msg, type)
+    } else {
+        // 不支持
+        alert("不支持 Web Notifications API");
+    }
+}
 
+//判断浏览器是否支持弹出实例
+function showMess(title, msg, type) {
+        console.log('1：' + Notification.permission);
+        //如果支持window.Notification 并且 许可不是拒绝状态
+        if (window.Notification && Notification.permission !== "denied") {
+            //Notification.requestPermission这是一个静态方法，作用就是让浏览器出现是否允许通知的提示
+            Notification.requestPermission(function (status) {
+                console.log('2: ' + status);
+                //如果状态是同意
+                if (status === "granted") {
+                    let body = '';
+                    if (type === 'text') {
+                        body = msg
+                    } else {
+                        body = "【文件信息不支持预览，请点击跳回网页查看！！】"
+                    }
+                    var m = new Notification(`用户${title}发送一条信息`, {
+                        body: body, //消息体内容
+                        icon: "../static/img/notice.png", //消息图片
+                        timeout: 3000
+                    });
+                    m.onclick = function () { //点击当前消息提示框后，跳转到当前页面
+                        window.focus();
+                    }
+                } else {
+                    alert('当前浏览器不支持弹出消息')
+                }
+            });
+        }
+}

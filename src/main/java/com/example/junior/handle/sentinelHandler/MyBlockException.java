@@ -10,13 +10,13 @@ import com.example.junior.vo.ResponseDataVO;
 * @Date: 2023/4/13
 */
 public class MyBlockException {
-    public static void allHandlerException(BlockException blockException) {
-        throw new BusinessException("太拥挤了 ~ 请稍后重试");
+    public static ResponseDataVO allHandlerException(BlockException blockException) {
+        return ResponseDataVO.fail("太拥挤了 ~ 请稍后重试");
     }
 
     // TODO 下面可以自定义其他兜底方法，注意使用 static 修饰。
 
-    public static void blackException(BlockException blockException) {
-        throw new BusinessException("你已经被加入黑名单，请联系管理员！");
+    public static ResponseDataVO blackException(BlockException blockException) {
+        return ResponseDataVO.fail("你已经被加入黑名单，请联系管理员！");
     }
 }
