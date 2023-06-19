@@ -947,7 +947,8 @@ function showMess(title, msg, type) {
                     var m = new Notification(`用户${title}发送一条信息`, {
                         body: body, //消息体内容
                         icon: "../static/img/notice.png", //消息图片
-                        renotify: false,
+                        tag: "msg",
+                        renotify: true,
                         timeout: 3000
                     });
                     // 延时3秒关闭
