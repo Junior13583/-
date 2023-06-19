@@ -947,8 +947,13 @@ function showMess(title, msg, type) {
                     var m = new Notification(`用户${title}发送一条信息`, {
                         body: body, //消息体内容
                         icon: "../static/img/notice.png", //消息图片
+                        renotify: false,
                         timeout: 3000
                     });
+                    // 延时3秒关闭
+                    setTimeout(function () {
+                        m.close();
+                    }, 3000);
                     m.onclick = function () { //点击当前消息提示框后，跳转到当前页面
                         window.focus();
                     }
