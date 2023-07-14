@@ -9,7 +9,9 @@ import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -19,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.core.io.Resource;
-
+import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Description: 聊天室控制层
@@ -79,10 +83,12 @@ public class ChatRoomController {
 
     @GetMapping("/download")
     @ResponseBody
-    public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String roomName, @RequestParam String alias) {
+    public ResponseEntity<Resource> download(@RequestParam String fileName, @RequestParam String roomName, @RequestParam String alias) throws UnsupportedEncodingException {
         Resource resource = chatRoomService.downloadFile(roomName, fileName);
+        String encodedFileName = UriUtils.encodePath(alias, StandardCharsets.UTF_8.toString());
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + alias + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
                 .body(resource);
     }
 

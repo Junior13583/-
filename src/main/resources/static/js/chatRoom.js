@@ -911,7 +911,9 @@ function acceptMsg(res) {
 
 $(document).on('click', '.bubble-file', function () {
     let downUrl = $(this).attr('name');
-    window.open(downUrl, '_blank')
+    let sp = 'alias='
+    let encodeDownUrl = downUrl.split(sp)[0] + sp + encodeURIComponent(downUrl.split(sp)[1])
+    window.open(encodeDownUrl, '_blank')
 });
 
 
