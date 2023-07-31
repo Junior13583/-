@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80028
 File Encoding         : 65001
 
-Date: 2023-06-14 17:27:46
+Date: 2023-07-31 14:06:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,16 +24,12 @@ CREATE TABLE `chat_msg` (
                             `roomId` int NOT NULL,
                             `sender` varchar(255) NOT NULL,
                             `msgType` varchar(255) NOT NULL,
-                            `content` text,
+                            `content` longblob,
                             `filename` varchar(800) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
                             `filesize` int DEFAULT NULL,
                             `sendTime` datetime NOT NULL,
                             PRIMARY KEY (`msgId`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb3;
-
--- ----------------------------
--- Records of chat_msg
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8mb3;
 
 
 -- ----------------------------
@@ -45,13 +41,12 @@ CREATE TABLE `room` (
                         `roomName` varchar(255) NOT NULL,
                         `creator` varchar(255) NOT NULL,
                         PRIMARY KEY (`roomId`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of room
 -- ----------------------------
 INSERT INTO `room` VALUES ('1', 'Junior 的聊天室', 'admin');
-
 
 -- ----------------------------
 -- Table structure for user_room
@@ -63,10 +58,6 @@ CREATE TABLE `user_room` (
                              `roomId` int NOT NULL,
                              `createTime` datetime NOT NULL,
                              PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
-
--- ----------------------------
--- Records of user_room
--- ----------------------------
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
 
 
