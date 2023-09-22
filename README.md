@@ -102,7 +102,30 @@ http {
 
 }
 ```
+- 再将 WebSocketConfigurator 类中获取ip改成下面的方式
+```java
+@Override
+    public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
 
+        Map<String, Object> attributes = sec.getUserProperties();
+        HttpSession session = (HttpSession) request.getHttpSession();
+        if (session != null) {
+            attributes.put(HTTP_SESSION_ID_ATTR_NAME, session.getId());
+            Enumeration<String> names = session.getAttributeNames();
+            while (names.hasMoreElements()) {
+                String name = names.nextElement();
+
+                // 不使用 nginx 代理时，用下面方式获取ip
+//                String ip = (String) session.getAttribute(name);
+                // 使用 nginx 代理，用下面方式获取ip
+                 String ip = request.getHeaders().get("x-forwarded-for").get(0);
+
+                attributes.put(name, ip);
+            }
+
+        }
+    }
+```
 
 #### 环境
 

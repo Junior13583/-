@@ -1,5 +1,6 @@
 package com.example.junior.config;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -35,7 +36,13 @@ public class WebSocketConfigurator extends ServerEndpointConfig.Configurator {
             Enumeration<String> names = session.getAttributeNames();
             while (names.hasMoreElements()) {
                 String name = names.nextElement();
-                attributes.put(name, session.getAttribute(name));
+
+                // 不使用 nginx 代理时，用下面方式获取ip
+                String ip = (String) session.getAttribute(name);
+                // 使用 nginx 代理，用下面方式获取ip
+                // String ip = request.getHeaders().get("x-forwarded-for").get(0);
+
+                attributes.put(name, ip);
             }
 
         }
