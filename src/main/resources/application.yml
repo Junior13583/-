@@ -10,6 +10,20 @@ server:
   port: 1234
   address: 10.197.24.79
 
+websocket:
+  # 不使用 https 时，使用 ws 协议
+  protocol: ws://
+
+  # 使用 https，需要将协议改成 wss
+#  protocol: wss://
+
+  # 不使用 nginx 代理时，端口设置和 web 服务端口一致
+  port: 1234
+
+  # 使用 nginx 代理时，端口需要设置为代理之后的端口号
+  # 例如 当项目使用 https 时，这时候需要将端口号设置为443
+#  port: 443
+
 spring:
   application:
     name: chat-room

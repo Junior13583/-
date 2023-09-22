@@ -49,7 +49,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     @Value("${spring.servlet.multipart.location}")
     private String uploadPath;
 
-    @Value("${server.port}")
+    @Value("${websocket.protocol}")
+    private String protocol;
+
+    @Value("${websocket.port}")
     private String port;
 
     @Value("${server.address}")
@@ -59,7 +62,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     public ResponseDataVO getUserInfo(String ip) {
         List<UserRoom> userRooms = chatRoomMapper.queryUserRoomByIp(ip);
         Map<String, Object> map = new HashMap<>(10);
-        String wsUrl = "ws://" + address + ":"+ port + "/websocket/";
+        String wsUrl = protocol + address + ":"+ port + "/websocket/";
 
         map.put("wsUrl", wsUrl);
         map.put("ip", ip);
