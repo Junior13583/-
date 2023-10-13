@@ -5,6 +5,7 @@ import com.example.junior.entity.ChatMsg;
 import com.example.junior.handle.sentinelHandler.MyBlockException;
 import com.example.junior.handle.sentinelHandler.MyFallback;
 import com.example.junior.service.chatService.ChatRoomServiceImpl;
+import com.example.junior.service.loginAndRegisterService.LoginAndRegisterServiceImpl;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
 import org.hibernate.validator.constraints.Length;
@@ -24,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -41,7 +44,25 @@ public class ChatRoomController {
     @Autowired
     private ChatRoomServiceImpl chatRoomService;
 
+    @Autowired
+    private LoginAndRegisterServiceImpl loginAndRegisterService;
 
+    @GetMapping("/loginPage")
+    public ModelAndView loginPage() {
+        return new ModelAndView("login");
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseDataVO login(@RequestParam @Email String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) {
+        return loginAndRegisterService.login(email, password);
+    }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseDataVO register(@RequestParam @Length(min = 1, max = 6) String name, @RequestParam @Email(message = "Invalid email address") String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) {
+        return loginAndRegisterService.register(name, email, password);
+    }
 
     @GetMapping("/")
     @SentinelResource(value = "index", defaultFallback = "allFallback", fallbackClass = {MyFallback.class},
