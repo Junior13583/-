@@ -4,7 +4,8 @@
 const signupButton = document.getElementById('signup-button'),
     loginButton = document.getElementById('login-button'),
     userForms = document.getElementById('user_options-forms'),
-    registerForm = document.getElementById('register_form')
+    registerForm = document.getElementById('register_form'),
+    loginForm = document.getElementById('login_form')
 
 cocoMessage.config({
     duration: 2000,
@@ -47,15 +48,21 @@ registerForm.addEventListener('submit', async (event) => {
         if (response.ok) {
             const data = await response.json();
             if (data.code === 200) {
-              cocoMessage.success('2000', data.data)
+                cocoMessage.success('2000', data.data);
+                // 注册成功后，将 email， password 复制到登录框，同时切换到登录部分
+                loginForm.email.value = email;
+                loginForm.password.value = password;
+                userForms.classList.remove('bounceLeft')
+                userForms.classList.add('bounceRight')
+
             } else {
-              cocoMessage.error('2000', data.msg)
+                cocoMessage.error('2000', data.msg);
             }
 
         } else {
-            cocoMessage.error('2000', '请求失败')
+            cocoMessage.error('2000', '请求失败');
         }
     } catch (error) {
-        cocoMessage.error('2000', '请求发生错误：' + error)
+        cocoMessage.error('2000', '请求发生错误：' + error);
     }
 }, false);
