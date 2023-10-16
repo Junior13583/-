@@ -4,6 +4,7 @@ import com.example.junior.vo.ResponseDataVO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
 * @Description: 登录和注册服务接口
@@ -22,7 +23,7 @@ public interface LoginAndRegisterService {
     * @Author: Junior
     * @Date: 2023/10/13
     */
-    ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, String email, String password);
+    ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, String email, String password) throws IOException;
 
     /**
     * 注册接口

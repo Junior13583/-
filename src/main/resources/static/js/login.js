@@ -66,3 +66,37 @@ registerForm.addEventListener('submit', async (event) => {
         cocoMessage.error('2000', '请求发生错误：' + error);
     }
 }, false);
+
+loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    let email = loginForm.email.value;
+    let password = loginForm.password.value;
+
+    let formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.code === 200) {
+                cocoMessage.success('2000', data.data);
+
+
+            } else {
+                cocoMessage.error('2000', data.msg);
+            }
+
+        } else {
+            cocoMessage.error('2000', '请求失败');
+        }
+    } catch (error) {
+        cocoMessage.error('2000', '请求发生错误：' + error);
+    }
+}, false);

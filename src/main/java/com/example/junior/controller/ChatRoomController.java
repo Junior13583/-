@@ -55,7 +55,7 @@ public class ChatRoomController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, @RequestParam @Email String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) {
+    public ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, @RequestParam @Email String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) throws IOException {
         return loginAndRegisterService.login(request, response, email, password);
     }
 
