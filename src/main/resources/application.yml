@@ -22,7 +22,15 @@ websocket:
 
   # 使用 nginx 代理时，端口需要设置为代理之后的端口号
   # 例如 当项目使用 https 时，这时候需要将端口号设置为443
-#  port: 443
+  port: 443
+
+# jwt 配置
+jwt:
+  header: "Authorization"     # token 返回头部
+  tokenPrefix: "Bearer "      # token 前缀
+  secret: "junior_1353815638" # 私钥
+  expireTime: 3600000     # token 的有效时间，单位是毫秒
+
 
 spring:
   application:

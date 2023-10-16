@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
@@ -54,8 +55,8 @@ public class ChatRoomController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResponseDataVO login(HttpServletRequest request, @RequestParam @Email String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) {
-        return loginAndRegisterService.login(email, password);
+    public ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, @RequestParam @Email String email, @RequestParam @Pattern(regexp = "^[a-zA-Z0-9]{8,}$") String password) {
+        return loginAndRegisterService.login(request, response, email, password);
     }
 
     @PostMapping("/register")

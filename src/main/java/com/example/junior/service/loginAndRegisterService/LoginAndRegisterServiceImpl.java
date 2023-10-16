@@ -1,7 +1,11 @@
 package com.example.junior.service.loginAndRegisterService;
 
+import com.example.junior.component.jwt.JwtUtil;
 import com.example.junior.vo.ResponseDataVO;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
 * @Description: 登录注册接口实现类
@@ -11,7 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginAndRegisterServiceImpl implements LoginAndRegisterService{
     @Override
-    public ResponseDataVO login(String email, String password) {
+    public ResponseDataVO login(HttpServletRequest request, HttpServletResponse response, String email, String password) {
+        String token = JwtUtil.createToken(email);
+        response.setHeader(JwtUtil.USER_LOGIN_TOKEN, token);
         return ResponseDataVO.success("登录成功");
     }
 

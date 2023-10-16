@@ -112,6 +112,14 @@
             <version>2021.1</version>
         </dependency>
 
+        <!--   jwt      -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
