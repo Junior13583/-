@@ -2,6 +2,7 @@ package com.example.junior.mapper;
 
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
+import com.example.junior.entity.ChatUser;
 import com.example.junior.entity.UserRoom;
 import org.springframework.stereotype.Repository;
 
@@ -87,5 +88,23 @@ public interface ChatRoomMapper {
     * @Date: 2023/6/13
     */
     List<ChatMsg> queryMsg(Integer roomId);
+
+    /**
+    * 查询用户
+    * @param chatUser:  chatUser
+    * @return: com.example.junior.entity.ChatUser
+    * @Author: Junior
+    * @Date: 2023/10/17
+    */
+    ChatUser queryUser(ChatUser chatUser);
+
+    /**
+    * 插入用户
+    * @param chatUser:  chatUser
+    * @return: void
+    * @Author: Junior
+    * @Date: 2023/10/17
+    */
+    void insertUser(ChatUser chatUser);
 
 }

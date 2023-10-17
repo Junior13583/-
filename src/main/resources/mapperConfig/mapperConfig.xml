@@ -16,6 +16,7 @@
         <typeAlias alias="ChatRoom" type="com.example.junior.entity.ChatRoom" />
         <typeAlias alias="ChatMsg" type="com.example.junior.entity.ChatMsg" />
         <typeAlias alias="UserRoom" type="com.example.junior.entity.UserRoom" />
+        <typeAlias alias="ChatUser" type="com.example.junior.entity.ChatUser" />
     </typeAliases>
 
     <plugins>

@@ -24,6 +24,11 @@
         values (#{roomId}, #{sender}, #{msgType}, #{content,jdbcType=BLOB}, #{filename}, #{filesize}, #{sendTime});
     </insert>
 
+    <insert id="insertUser" parameterType="ChatUser">
+        insert into chat_user (name, email, password)
+        values (#{name}, #{email}, #{password});
+    </insert>
+
     <delete id="deleteUserRoom" parameterType="UserRoom">
         delete
         from user_room
@@ -64,6 +69,11 @@
     <select id="queryMsg_COUNT" resultType="Long">
         select count(msgId)
         from chat_msg where roomId=#{roomId}
+    </select>
+
+    <select id="queryUser" parameterType="ChatUser" resultType="ChatUser">
+        select *
+        from chat_user where email=#{email};
     </select>
 
 </mapper>

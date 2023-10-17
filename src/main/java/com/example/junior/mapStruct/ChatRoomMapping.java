@@ -1,8 +1,10 @@
 package com.example.junior.mapStruct;
 
 import com.example.junior.dto.ChatRoomDTO;
+import com.example.junior.dto.ChatUserDTO;
 import com.example.junior.dto.UserRoomDTO;
 import com.example.junior.entity.ChatRoom;
+import com.example.junior.entity.ChatUser;
 import com.example.junior.entity.UserRoom;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -62,5 +64,23 @@ public interface ChatRoomMapping {
     * @Date: 2023/6/13
     */
     UserRoomDTO userRoomTOUserRoomDTO(UserRoom userRoom);
+
+    /**
+    * ChatUserDTO 转换为 ChatUser 类
+    * @param chatUserDTO:  chatUserDTO
+    * @return: com.example.junior.entity.ChatUser
+    * @Author: Junior
+    * @Date: 2023/10/16
+    */
+    ChatUser chatUserDTOToChatUser(ChatUserDTO chatUserDTO);
+
+    /**
+    * ChatUser 类转换为 ChatUserDTO 类
+    * @param chatUser:  chatUser
+    * @return: com.example.junior.dto.ChatUserDTO
+    * @Author: Junior
+    * @Date: 2023/10/16
+    */
+    ChatUserDTO chatUserToChatUserDTO(ChatUser chatUser);
 
 }
