@@ -45,22 +45,22 @@ public interface ChatRoomMapper {
 
     /**
     * 根据用户ip和房间号查询
-    * @param ip:  ip
+    * @param email:  邮箱
      * @param roomId:  roomId
     * @return: java.util.List<com.example.junior.entity.UserRoom>
     * @Author: Junior
     * @Date: 2023/6/13
     */
-    List<UserRoom> queryUserRoom(String ip, Integer roomId);
+    List<UserRoom> queryUserRoom(String email, Integer roomId);
 
     /**
     * 通过用户ip查询所有聊天室
-    * @param ip:  ip
+    * @param email:  用户邮箱
     * @return: java.util.List<com.example.junior.entity.UserRoom>
     * @Author: Junior
     * @Date: 2023/6/13
     */
-    List<UserRoom> queryUserRoomByIp(String ip);
+    List<UserRoom> queryUserRoomByEmail(String email);
 
     /**
     * 删除用户ip和房间id绑定

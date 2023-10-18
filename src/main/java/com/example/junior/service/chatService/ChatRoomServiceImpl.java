@@ -1,9 +1,12 @@
 package com.example.junior.service.chatService;
 
 import com.example.junior.component.websocket.WebSocketServer;
+import com.example.junior.dto.ChatMsgDTO;
 import com.example.junior.dto.ChatRoomDTO;
+import com.example.junior.dto.ChatUserDTO;
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.entity.ChatRoom;
+import com.example.junior.entity.ChatUser;
 import com.example.junior.entity.UserRoom;
 import com.example.junior.mapStruct.ChatRoomMapping;
 import com.example.junior.mapper.ChatRoomMapper;
@@ -59,36 +62,36 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private String address;
 
     @Override
-    public ResponseDataVO getUserInfo(String ip) {
-        List<UserRoom> userRooms = chatRoomMapper.queryUserRoomByIp(ip);
+    public ResponseDataVO getUserInfo(ChatUserDTO chatUserDTO) {
+        List<UserRoom> userRooms = chatRoomMapper.queryUserRoomByEmail(chatUserDTO.getEmail());
         Map<String, Object> map = new HashMap<>(10);
         String wsUrl = protocol + address + ":"+ port + "/websocket/";
 
         map.put("wsUrl", wsUrl);
-        map.put("ip", ip);
+        map.put("ip", chatUserDTO.getName());
         map.put("rooms", userRooms);
 
         return ResponseDataVO.customize(200, "成功", map);
     }
 
     @Override
-    public ResponseDataVO insertChatRoom(String roomName, String ip) {
+    public ResponseDataVO insertChatRoom(String roomName, String email) {
         ResponseDataVO res = ResponseDataVO.builder().msg("成功").build();
         // 查询房间是否存在
         List<ChatRoom> queryChatRoom = chatRoomMapper.queryChatRoom(roomName);
 
         if (!queryChatRoom.isEmpty()) {
-            // 查询当前房间是否和用户ip绑定
-            List<UserRoom> queryUserRoom = chatRoomMapper.queryUserRoom(ip, queryChatRoom.get(0).getRoomId());
+            // 查询当前房间是否和用户邮箱绑定
+            List<UserRoom> queryUserRoom = chatRoomMapper.queryUserRoom(email, queryChatRoom.get(0).getRoomId());
 
             if (!queryUserRoom.isEmpty()) {
                 res.setCode(201).setData("用户已添加该聊天室");
             } else if (queryChatRoom.get(0).getRoomId() == 1) {
                 res.setCode(201).setData("系统共用聊天室不能再次添加");
             } else {
-                // 用户ip和房间号绑定
+                // 用户邮箱和房间号绑定
                 UserRoom userRoom = UserRoom.builder()
-                        .userIp(ip)
+                        .userEmail(email)
                         .roomId(queryChatRoom.get(0).getRoomId())
                         .createTime(LocalDateTime.now())
                         .build();
@@ -99,15 +102,15 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         } else {
             ChatRoomDTO chatRoomDTO = ChatRoomDTO.builder()
                     .roomName(roomName)
-                    .creator(ip).build();
+                    .creator(email).build();
             ChatRoom chatRoom = ChatRoomMapping.INSTANCE.chatRoomDTOToChatRoom(chatRoomDTO);
 
             // 添加新的聊天室
             chatRoomMapper.insertChatRoom(chatRoom);
 
-            // 同时将新的聊天室和用户ip绑定
+            // 同时将新的聊天室和用户邮箱绑定
             UserRoom userRoom = UserRoom.builder()
-                    .userIp(ip)
+                    .userEmail(email)
                     .roomId(chatRoom.getRoomId())
                     .createTime(LocalDateTime.now())
                     .build();
@@ -119,7 +122,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     }
 
     @Override
-    public ResponseDataVO deleteUserRoom(String roomName, String ip) {
+    public ResponseDataVO deleteUserRoom(String roomName, String email) {
 
         ResponseDataVO res = ResponseDataVO.builder().msg("成功").build();
         // 根据房间名获取房间id
@@ -128,12 +131,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         // 存在聊天室
         if (!queryChatRoom.isEmpty()) {
             UserRoom userRoom = UserRoom.builder()
-                    .userIp(ip)
+                    .userEmail(email)
                     .roomId(queryChatRoom.get(0).getRoomId())
                     .build();
 
-            //  获取当前聊天室id和用户ip是否存在绑定
-            List<UserRoom> userRooms = chatRoomMapper.queryUserRoom(userRoom.getUserIp(), userRoom.getRoomId());
+            //  获取当前聊天室id和用户邮箱是否存在绑定
+            List<UserRoom> userRooms = chatRoomMapper.queryUserRoom(userRoom.getUserEmail(), userRoom.getRoomId());
 
             if (!userRooms.isEmpty()) {
                 // 删除绑定
@@ -152,7 +155,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     }
 
     @Override
-    public ResponseDataVO uploadFile(String roomName, String ip, MultipartFile file, Integer index) throws IOException {
+    public ResponseDataVO uploadFile(String roomName, String email, MultipartFile file, Integer index) throws IOException {
 
         String filename = file.getOriginalFilename();
         Path roomPath = Paths.get(uploadPath, roomName);
@@ -170,7 +173,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             file.transferTo(new File(Paths.get(uploadPath, roomName, fileName).toString()));
 
             // 通过websocket向其他客户端发送消息
-            webSocketServer.broadcastMsg(roomName, ip, file, fileName, fileBytes);
+            webSocketServer.broadcastMsg(roomName, email, file, fileName, fileBytes);
             return ResponseDataVO.success(index);
 
         } catch (Throwable throwable) {
@@ -195,7 +198,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     }
 
     @Override
-    public PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String ip) {
+    public PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String email) {
 
         // 根据房间名获取房间id
         List<ChatRoom> queryChatRoom = chatRoomMapper.queryChatRoom(roomName);
@@ -209,15 +212,18 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             List<ChatMsg> chatMsgList = chatRoomMapper.queryMsg(roomId);
             PageInfo<ChatMsg> chatMsgPageInfo = new PageInfo<>(chatMsgList);
 
-            // 根据用户ip将查询的数据分为自己发送和其他人发送
+            // 根据用户邮箱将查询的数据分为自己发送和其他人发送
             List<ChatMsg> newChatMsgList = chatMsgList.stream().peek(chatMsg -> {
                 // 添加聊天气泡位置
-                if (chatMsg.getSender().equals(ip)) {
+                if (chatMsg.getSender().equals(email)) {
                     chatMsg.setPosition("right");
                 }else {
                     chatMsg.setPosition("left");
                 }
-
+                // 将消息发送者邮箱改为发送者名字
+                ChatUser chatUser = ChatUser.builder()
+                        .email(email).build();
+                chatMsg.setSender(chatRoomMapper.queryUser(chatUser).getName());
 
             }).collect(Collectors.toList());
 

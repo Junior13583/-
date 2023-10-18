@@ -87,7 +87,7 @@ loginForm.addEventListener('submit', async (event) => {
             const data = await response.json();
             if (data.code === 200) {
                 cocoMessage.success('2000', data.data);
-
+                window.location.href = "/";
 
             } else {
                 cocoMessage.error('2000', data.msg);

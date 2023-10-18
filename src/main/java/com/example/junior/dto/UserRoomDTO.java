@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class UserRoomDTO {
     private Integer id;
-    private String userIp;
+    private String userEmail;
     private Integer roomId;
     private String roomName;
     private LocalDateTime createTime;

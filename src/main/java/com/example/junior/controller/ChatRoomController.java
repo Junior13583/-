@@ -1,6 +1,7 @@
 package com.example.junior.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.example.junior.dto.ChatUserDTO;
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.handle.sentinelHandler.MyBlockException;
 import com.example.junior.handle.sentinelHandler.MyFallback;
@@ -76,31 +77,35 @@ public class ChatRoomController {
     @ResponseBody
     public ResponseDataVO getIp(HttpServletRequest request) {
 
-        return chatRoomService.getUserInfo(ipInfo(request));
+        return chatRoomService.getUserInfo(loginAndRegisterService.jwtInfo(request));
     }
 
     @PostMapping("/addChat")
     @ResponseBody
     public ResponseDataVO addChat(HttpServletRequest request, @RequestParam @Length(min = 3, max = 12) String  roomName) {
-        String ip = ipInfo(request);
+        ChatUserDTO chatUserDTO = loginAndRegisterService.jwtInfo(request);
+        String email = chatUserDTO.getEmail();
 
-        return chatRoomService.insertChatRoom(roomName, ip);
+        return chatRoomService.insertChatRoom(roomName, email);
     }
 
     @PostMapping("/delChat")
     @ResponseBody
     public ResponseDataVO delChat(HttpServletRequest request, @RequestParam String roomName) {
-        String ip = ipInfo(request);
+        ChatUserDTO chatUserDTO = loginAndRegisterService.jwtInfo(request);
+        String email = chatUserDTO.getEmail();
 
-        return chatRoomService.deleteUserRoom(roomName, ip);
+        return chatRoomService.deleteUserRoom(roomName, email);
     }
 
     @PostMapping("/uploadFile")
     @ResponseBody
     public ResponseDataVO uploadFile(HttpServletRequest request, @RequestParam String roomName,
                                      @RequestParam MultipartFile file, @RequestParam Integer index) throws IOException {
-        String ip = ipInfo(request);
-        return chatRoomService.uploadFile(roomName, ip, file, index);
+        ChatUserDTO chatUserDTO = loginAndRegisterService.jwtInfo(request);
+        String email = chatUserDTO.getEmail();
+
+        return chatRoomService.uploadFile(roomName, email, file, index);
     }
 
     @GetMapping("/download")
@@ -117,19 +122,11 @@ public class ChatRoomController {
     @PostMapping("/loadingMsg")
     @ResponseBody
     public ResponseDataVO loadingMsg(HttpServletRequest request, @RequestParam String roomName, @RequestParam Integer pageIndex) {
-        String ip = ipInfo(request);
-        PageInfo<ChatMsg> pageInfo = chatRoomService.queryMsg(pageIndex, roomName, ip);
+        ChatUserDTO chatUserDTO = loginAndRegisterService.jwtInfo(request);
+        String email = chatUserDTO.getEmail();
+        PageInfo<ChatMsg> pageInfo = chatRoomService.queryMsg(pageIndex, roomName, email);
         return ResponseDataVO.success(pageInfo);
     }
 
-    public String ipInfo(HttpServletRequest request) {
 
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.isEmpty()) {
-            ip = request.getRemoteAddr();
-        } else {
-            ip = ip.split(",")[0];
-        }
-        return ip;
-    }
 }

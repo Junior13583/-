@@ -77,6 +77,14 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService{
         return ResponseDataVO.fail("注册失败，当前邮箱已被使用");
     }
 
+    /**
+    * 生成 jwt 加密同时保存到 cookies 中
+    * @param response:  response
+	* @param email:  email
+    * @return: void
+    * @Author: Junior
+    * @Date: 2023/10/17
+    */
     public static void setCookie(HttpServletResponse response, String email) {
         String token = JwtUtil.createToken(email);
         String tokenValue = token.split(" ")[1];
@@ -84,5 +92,21 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService{
         cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
+    }
+
+    /**
+    * 从 request 中获取到用户信息
+    * @param request:  request
+    * @return: com.example.junior.dto.ChatUserDTO
+    * @Author: Junior
+    * @Date: 2023/10/17
+    */
+    public ChatUserDTO jwtInfo(HttpServletRequest request) {
+
+        String email = request.getSession().getAttribute("sub").toString();
+        ChatUser chatUser = ChatUser.builder()
+                .email(email).build();
+
+        return ChatRoomMapping.INSTANCE.chatUserToChatUserDTO(chatRoomMapper.queryUser(chatUser));
     }
 }

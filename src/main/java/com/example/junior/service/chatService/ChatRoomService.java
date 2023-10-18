@@ -1,5 +1,7 @@
 package com.example.junior.service.chatService;
 
+import com.example.junior.dto.ChatMsgDTO;
+import com.example.junior.dto.ChatUserDTO;
 import com.example.junior.entity.ChatMsg;
 import com.example.junior.vo.ResponseDataVO;
 import com.github.pagehelper.PageInfo;
@@ -16,13 +18,13 @@ import java.io.IOException;
 public interface ChatRoomService {
 
     /**
-    * 通过ip获取该ip拥有的由于聊天室
-    * @param ip:  ip
+    * 通过用户信息获取该用户拥有的由于聊天室
+    * @param chatUserDTO:  用户对象
     * @return: com.example.junior.vo.ResponseDataVO
     * @Author: Junior
     * @Date: 2023/6/13
     */
-    ResponseDataVO getUserInfo(String ip);
+    ResponseDataVO getUserInfo(ChatUserDTO chatUserDTO);
 
     /**
     * 添加聊天室
