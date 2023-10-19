@@ -89,7 +89,6 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService{
         String token = JwtUtil.createToken(email);
         String tokenValue = token.split(" ")[1];
         Cookie cookie = new Cookie(JwtUtil.USER_LOGIN_TOKEN, tokenValue);
-        cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
         response.addCookie(cookie);
     }

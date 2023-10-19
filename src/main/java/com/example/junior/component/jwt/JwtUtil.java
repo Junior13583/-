@@ -1,12 +1,12 @@
 package com.example.junior.component.jwt;
 
 import com.auth0.jwt.JWT;
-
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Verification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +19,7 @@ import java.util.Date;
 */
 @Component
 @ConfigurationProperties(prefix = "jwt")
+@Slf4j
 public class JwtUtil {
     /**
      * 存进客户端的 token 的 key 名
@@ -103,9 +104,9 @@ public class JwtUtil {
             }
             return "";
         } catch (TokenExpiredException e){
-            e.printStackTrace();
+            log.error(e.toString());
         } catch (Exception e){
-            e.printStackTrace();
+            log.error(e.toString());
             return "";
         }
         return "";

@@ -10,7 +10,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -23,7 +22,6 @@ import java.util.Optional;
 public class LoginInterceptor implements HandlerInterceptor {
 
     public static final String LOGIN_PAGE = "/loginPage";
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,17 +38,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             token = tokenOptional.orElse(null);
         }
 
-        // token 不存在
-        if (token == null || token.isEmpty()) {
-            log.error("token 不存在");
-            response.sendRedirect(LOGIN_PAGE);
-            return false;
-        }
-
         // 验证 token
         String sub = JwtUtil.validateToken(token);
         if (sub == null || sub.isEmpty()) {
-            log.error("token 内容被修改无法使用");
+            log.error("token 无法识别");
             response.sendRedirect(LOGIN_PAGE);
             return false;
         }
@@ -62,10 +53,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         // 拦截器保留sub信息，方便后续链式调用中使用
         request.getSession().setAttribute("sub", sub);
-        // 在 response 头部保存 sub，用于在 websocket 拦截时获取
-        request.setAttribute("sub", sub);
-        response.setHeader("sub", sub);
-        response.setHeader("x-forwarded-for", sub);
 
 
         return true;

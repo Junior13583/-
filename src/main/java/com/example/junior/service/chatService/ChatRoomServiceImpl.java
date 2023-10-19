@@ -222,7 +222,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 }
                 // 将消息发送者邮箱改为发送者名字
                 ChatUser chatUser = ChatUser.builder()
-                        .email(email).build();
+                        .email(chatMsg.getSender()).build();
                 chatMsg.setSender(chatRoomMapper.queryUser(chatUser).getName());
 
             }).collect(Collectors.toList());

@@ -13,7 +13,6 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +30,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**

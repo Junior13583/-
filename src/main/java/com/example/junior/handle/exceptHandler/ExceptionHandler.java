@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolation;
@@ -25,7 +24,6 @@ import java.util.Map;
 @Slf4j
 public class ExceptionHandler {
 
-
     /**
      * 处理执行过程中出现的异常
      *
@@ -35,8 +33,7 @@ public class ExceptionHandler {
      * @Date: 2023/3/9
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)
-    @ResponseBody
-    public ResponseDataVO exception(Throwable e) {
+    public Object  exception(Throwable e) {
 
         //  处理 BusinessException 异常
         if (e instanceof BusinessException) {
@@ -57,8 +54,6 @@ public class ExceptionHandler {
         if (e instanceof HttpMessageNotReadableException) {
             return httpMessageNotReadableExceptionHandle(e);
         }
-
-        //  TODO 自定义异常再此添加
 
         //  处理 Exception 异常
         if (e instanceof Exception) {

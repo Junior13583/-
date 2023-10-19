@@ -29,7 +29,7 @@ jwt:
   header: "Authorization"     # token 返回头部
   tokenPrefix: "Bearer "      # token 前缀
   secret: "junior_1353815638" # 私钥
-  expireTime: 3600000     # token 的有效时间，单位是毫秒
+  expireTime: 1800000     # token 的有效时间，单位是毫秒
 
 
 spring:

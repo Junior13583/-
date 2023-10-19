@@ -34,12 +34,26 @@ cocoMessage.config({
     duration: 2000,
 });
 
+// 获取cookie
+function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    for(let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if(name === cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return "";
+}
+
 let ws = null;
 function connect(room) {
     if (ws != null) {
         ws.close(1000, '切换聊天室')
     }
-    ws = new WebSocket(`${wsUrl}${room}`);
+    // 获取 token，用于websocket连接认证
+    let token = getCookie("token");
+    ws = new WebSocket(`${wsUrl}${room}?token=${token}`);
 
     ws.onopen = function() {
         console.log(`聊天室-->${room}: 连接已经建立`);
@@ -53,6 +67,8 @@ function connect(room) {
     ws.onerror = function() {
         console.log('websocket 服务器异常')
         cocoMessage.error(2000, "websocket 服务器异常")
+        // 重定向到登录页
+        window.location.href = '/loginPage';
     };
 
     ws.onclose = function(evt) {
@@ -60,11 +76,8 @@ function connect(room) {
             console.log(`聊天室-->${room}: 关闭当前连接`);
             // cocoMessage.info(1000, `聊天室-->${room}: 关闭当前连接`)
         } else {
-            setTimeout(function() {
-                console.log(`聊天室-->${room}: 正在尝试重新连接...`);
-                cocoMessage.success(2000, `聊天室-->${room}: 正在尝试重新连接...`)
-                connect(room);
-            }, 1500);
+            // 重定向到登录页
+            window.location.href = '/loginPage';
         }
     };
 }
@@ -218,7 +231,8 @@ function addChat() {
                 }else if(res.code === 201) {
                     cocoMessage.info(2000, res.data)
                 }else {
-                    cocoMessage.error(2000, res.msg)
+                    // 重定向到登录页
+                    window.location.href = '/loginPage';
                 }
             },
             error: function (res) {
@@ -850,10 +864,14 @@ function loadingMsg(formData, dom) {
                     }
 
                 });
+            }else {
+                // 重定向到登录页
+                window.location.href = '/loginPage';
             }
         },
         error: function (res) {
-
+            // 重定向到登录页
+            window.location.href = '/loginPage';
         }
 
     })
