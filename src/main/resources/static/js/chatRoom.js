@@ -420,7 +420,29 @@ function getConvertSize(fileSize) {
     return convertSize
 }
 
+/**
+ * 将 msg 中的连接转为可以点击的连接
+ * @Author: Junior
+ * @Date: 2023/10/20
+ * @param msg
+ */
+function getConvertMsg(msg) {
+    let urlRegex = /(http:\/\/|https:\/\/)([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/gi;
+    let htmlRegex = /<(?!\/?a(?=>|\s.*>))([^\s<>]+)[^<>]*>/gi;
+
+    // 将消息中http连接转换为 <a> 标签
+    let replaceUrlText = msg.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    });
+
+    // 将除了a标签的其他所有html标签转化为实体
+    return replaceUrlText.replace(htmlRegex, function (match) {
+        return '&lt;' + match.substring(1, match.length - 1) + '&gt;';
+    });
+}
+
 function insertText(horizontal, vertical, user, email, sendMsg) {
+    let convertMsg = getConvertMsg(sendMsg);
     let $rightChatRoom = $('.right-chatRoom')
     if (horizontal === 'left') {
         if (vertical === 'head') {
@@ -438,7 +460,7 @@ function insertText(horizontal, vertical, user, email, sendMsg) {
                                     </div>`);
             // 获取最后添加的气泡
             let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
-            lastBubble.textContent = sendMsg
+            lastBubble.innerHTML = convertMsg
         } else if (vertical === 'end'){
             // 往后添加靠左的气泡
             $rightChatRoom.append(`<div class="bubble">
@@ -454,7 +476,7 @@ function insertText(horizontal, vertical, user, email, sendMsg) {
                                     </div>`);
             // 获取最后添加的气泡
             let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
-            lastBubble.textContent = sendMsg
+            lastBubble.innerHTML = convertMsg
         }
     }else if (horizontal === 'right') {
         if (vertical === 'head') {
@@ -472,7 +494,7 @@ function insertText(horizontal, vertical, user, email, sendMsg) {
                                     </div>`);
             // 获取最后添加的气泡
             let lastBubble = $($rightChatRoom.children().first()).find('.bubble-text')[0];
-            lastBubble.textContent = sendMsg
+            lastBubble.innerHTML = convertMsg
         } else if (vertical === 'end'){
             // 往后添加靠右的气泡
             $rightChatRoom.append(`<div class="bubble">
@@ -488,7 +510,7 @@ function insertText(horizontal, vertical, user, email, sendMsg) {
                                     </div>`)
             // 获取最后添加的气泡
             let lastBubble = $($rightChatRoom.children().last()).find('.bubble-text')[0];
-            lastBubble.textContent = sendMsg
+            lastBubble.innerHTML = convertMsg
         }
     }
     return $rightChatRoom.children().last();
