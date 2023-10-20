@@ -68,7 +68,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         String wsUrl = protocol + address + ":"+ port + "/websocket/";
 
         map.put("wsUrl", wsUrl);
-        map.put("ip", chatUserDTO.getName());
+        map.put("username", chatUserDTO.getName());
+        map.put("email", chatUserDTO.getEmail());
         map.put("rooms", userRooms);
 
         return ResponseDataVO.customize(200, "成功", map);
@@ -220,10 +221,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 }else {
                     chatMsg.setPosition("left");
                 }
-                // 将消息发送者邮箱改为发送者名字
+                // 添加发送者名字
                 ChatUser chatUser = ChatUser.builder()
                         .email(chatMsg.getSender()).build();
-                chatMsg.setSender(chatRoomMapper.queryUser(chatUser).getName());
+                chatMsg.setUsername(chatRoomMapper.queryUser(chatUser).getName());
 
             }).collect(Collectors.toList());
 

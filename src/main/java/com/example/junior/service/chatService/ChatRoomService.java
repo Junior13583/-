@@ -29,27 +29,27 @@ public interface ChatRoomService {
     /**
     * 添加聊天室
     * @param roomName:  聊天室名称
-    * @param ip:  用户ip
+    * @param email:  用户邮箱
     * @return: String
     * @Author: Junior
     * @Date: 2023/6/12
     */
-    ResponseDataVO insertChatRoom(String  roomName, String ip);
+    ResponseDataVO insertChatRoom(String  roomName, String email);
 
     /**
-    * 删除用户ip和房间id绑定
-    * @param ip:  ip
+    * 删除用户邮箱和房间id绑定
+    * @param email:  用户邮箱
     * @param roomName:  roomName
     * @return: void
     * @Author: Junior
     * @Date: 2023/6/13
     */
-    ResponseDataVO deleteUserRoom(String roomName, String ip);
+    ResponseDataVO deleteUserRoom(String roomName, String email);
 
     /**
     * 上传文件
     * @param roomName:  roomName
-     * @param ip:  ip
+     * @param email:  用户邮箱
      * @param file:  file
      * @param index:  前端发送的文件位置，需要再次返回前端用于定位作用
     * @exception IOException: io异常
@@ -57,7 +57,7 @@ public interface ChatRoomService {
     * @Author: Junior
     * @Date: 2023/6/14
     */
-    ResponseDataVO uploadFile(String roomName, String ip, MultipartFile file, Integer index) throws IOException;
+    ResponseDataVO uploadFile(String roomName, String email, MultipartFile file, Integer index) throws IOException;
 
     /**
     * 文件下载接口
@@ -73,12 +73,12 @@ public interface ChatRoomService {
     * 根据房间名字和用户ip查询所有消息
     * @param pageIndex:  pageIndex
      * @param roomName:  roomName
-     * @param ip:  ip
+     * @param email:  用户邮箱
     * @return: com.github.pagehelper.PageInfo<com.example.junior.entity.ChatMsg>
     * @Author: Junior
     * @Date: 2023/6/14
     */
-    PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String ip);
+    PageInfo<ChatMsg> queryMsg(Integer pageIndex, String roomName, String email);
 
 
 

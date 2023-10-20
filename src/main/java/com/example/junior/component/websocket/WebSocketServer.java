@@ -11,11 +11,8 @@ import com.example.junior.mapper.ChatRoomMapper;
 import com.example.junior.vo.ResponseDataVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.socket.WebSocketExtension;
 
 import javax.annotation.Resource;
 import javax.websocket.*;
@@ -23,7 +20,10 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -53,8 +53,8 @@ public class WebSocketServer {
     public void onOpen(Session session, @PathParam("room") String room) throws Exception {
 
         // 解析 session
-        Map<String, Object> sessionMap = analysisToken(session);
-        String username = (String) sessionMap.get("username");
+        Map<String, String > sessionMap = analysisToken(session);
+        String username = sessionMap.get("username");
 
         // 如果当前聊天室不在Map中，就添加
         SESSION_MAP.computeIfAbsent(room, k -> new ArrayList<>());
@@ -69,8 +69,8 @@ public class WebSocketServer {
     public void onClose(Session session, @PathParam("room") String room, CloseReason closeReason) throws Exception {
         List<Session> sessionList = SESSION_MAP.get(room);
         // 解析 session
-        Map<String, Object> sessionMap = analysisToken(session);
-        String username = (String) sessionMap.get("username");
+        Map<String, String> sessionMap = analysisToken(session);
+        String username = sessionMap.get("username");
 
 
         if (sessionList != null) {
@@ -90,9 +90,9 @@ public class WebSocketServer {
         // 获取当前房间的所有Client
         List<Session> sessionList = SESSION_MAP.get(room);
         // 解析 session
-        Map<String, Object> sessionMap = analysisToken(session);
-        String username = (String) sessionMap.get("username");
-        String email = (String) sessionMap.get("email");
+        Map<String, String> sessionMap = analysisToken(session);
+        String username = sessionMap.get("username");
+        String email = sessionMap.get("email");
 
 
         log.info("用户【" + username + "】：在---> 【" + room + "】发送一条消息：" + message);
@@ -119,7 +119,8 @@ public class WebSocketServer {
                     if (!clientEmail.equals(email)) {
                         try {
                             Map<String, Object> data = new HashMap<>(10);
-                            data.put("sender", username);
+                            data.put("sender", email);
+                            data.put("username", username);
                             data.put("content", message);
                             data.put("type", "text");
                             // 转换为json字符串
@@ -168,9 +169,9 @@ public class WebSocketServer {
     * @Author: Junior
     * @Date: 2023/10/19
     */
-    public Map<String, Object> analysisToken(Session session) throws Exception {
+    public Map<String, String> analysisToken(Session session) throws Exception {
 
-        Map<String, Object> resultMap = new HashMap<>(10);
+        Map<String, String> resultMap = new HashMap<>(10);
 
         // 获取 token
         String token = session.getRequestParameterMap().get("token").get(0);
@@ -218,13 +219,7 @@ public class WebSocketServer {
 
             String downloadUrl = "";
             // 拼接下载链接
-            if ("image".equals(fileType)) {
-                // 图片直接保存图片数据
-                String base64Image = Base64.getEncoder().encodeToString(fileByte);
-                downloadUrl = "data:" + file.getContentType() + ";base64," + base64Image;
-            }else {
-                downloadUrl = "/download?fileName=" + fileName + "&roomName=" + roomName + "&alias=" + realName;
-            }
+            downloadUrl = "/download?fileName=" + fileName + "&roomName=" + roomName + "&alias=" + realName;
             final String content = downloadUrl;
 
             // 将消息存入数据库
@@ -248,7 +243,8 @@ public class WebSocketServer {
                     if (!clientEmail.equals(email)) {
                         try {
                             Map<String, Object> data = new HashMap<>(10);
-                            data.put("sender", chatUserDTO.getName());
+                            data.put("sender", email);
+                            data.put("username", chatUserDTO.getName());
                             data.put("content", content);
                             data.put("type", fileType);
                             data.put("name", file.getOriginalFilename());

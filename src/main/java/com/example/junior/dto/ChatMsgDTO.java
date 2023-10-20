@@ -31,4 +31,5 @@ public class ChatMsgDTO {
      * 附加信息
      */
     private String position;
+    private String username;
 }

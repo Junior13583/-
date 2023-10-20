@@ -72,12 +72,25 @@ body {
     margin-left: 24px;
 }
 
-.user-ip{
+.user-name{
     margin-left: 96px;
     margin-top: -42px;
     font-size: 18px;
     font-family: "Microsoft YaHei UI";
     font-weight: 800;
+    display: flex;
+}
+
+.append-info{
+    font-size: 12px;
+    font-weight: 500;
+    color: #4a4a4d;
+    background: #cdca47;
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 3px 5px;
+    line-height: 17px;
+    text-align: center;
 }
 
 .user-info{
@@ -269,19 +282,21 @@ body {
 
 .bubble-user-box {
     display: flex;
+    padding-bottom: 5px;
 }
 
 .bubble-user-box-right {
     display: flex;
     justify-content: flex-end;
+    padding-bottom: 5px;
 }
 
 .bubble-user{
     height: 21px;
     line-height: 21px;
-    font-size: 14px;
+    font-size: 18px;
     font-family: "Microsoft YaHei UI";
-    font-weight: 500;
+    font-weight: 800;
 }
 
 .bubble-info-box{
@@ -355,6 +370,7 @@ body {
     max-height: 170px;
     border-radius: 10px;
     border: 1px solid #707070;
+    cursor: pointer;
 }
 
 .bubble-file {

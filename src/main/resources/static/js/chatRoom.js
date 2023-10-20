@@ -89,7 +89,8 @@ $.ajax({
     processData: false,
     success: function (res) {
         if (res.code === 200) {
-            $('.user-ip').text(res.data.ip);
+            let userInfoHtml = `${res.data.username}<span class="append-info">${res.data.email}</span>`
+            $('.user-name').html(userInfoHtml);
             wsUrl = res.data.wsUrl;
             res.data.rooms.forEach(data => {
                 let formattedDatetime = data.createTime.replace('T', ' ').substr(0, 16);
@@ -103,7 +104,8 @@ $.ajax({
                             </div>`);
             })
         } else {
-            $('.user-ip').text('我');
+            // 重定向到登录页
+            window.location.href = '/loginPage';
         }
     }
 });
@@ -174,11 +176,13 @@ function delChatRoom(isCreate, dom) {
                 }else if(res.code === 201) {
                     cocoMessage.info(2000, res.data)
                 }else {
-                    cocoMessage.error(2000, res.msg)
+                    // 重定向到登录页
+                    window.location.href = '/loginPage';
                 }
             },
             error:function (res) {
-                cocoMessage.error(2000, res)
+                // 重定向到登录页
+                window.location.href = '/loginPage';
             }
         })
 
@@ -236,7 +240,8 @@ function addChat() {
                 }
             },
             error: function (res) {
-                cocoMessage.error(2000, res)
+                // 重定向到登录页
+                window.location.href = '/loginPage';
             },
         })
 
@@ -415,7 +420,7 @@ function getConvertSize(fileSize) {
     return convertSize
 }
 
-function insertText(horizontal, vertical, user, sendMsg) {
+function insertText(horizontal, vertical, user, email, sendMsg) {
     let $rightChatRoom = $('.right-chatRoom')
     if (horizontal === 'left') {
         if (vertical === 'head') {
@@ -423,6 +428,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
             $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box">
                                             <div class="bubble-info">
@@ -438,6 +444,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
             $rightChatRoom.append(`<div class="bubble">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box">
                                             <div class="bubble-info">
@@ -455,6 +462,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
             $rightChatRoom.prepend(`<div class="bubble">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box-right">
                                             <div class="bubble-info-right">
@@ -470,6 +478,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
             $rightChatRoom.append(`<div class="bubble">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box-right">
                                             <div class="bubble-info-right">
@@ -485,7 +494,7 @@ function insertText(horizontal, vertical, user, sendMsg) {
     return $rightChatRoom.children().last();
 }
 
-function insertImage(horizontal, vertical, user, sendMsg, file) {
+function insertImage(horizontal, vertical, user, email, sendMsg, file) {
     let $rightChatRoom = $('.right-chatRoom')
     if (horizontal === 'left') {
         if (vertical === 'head') {
@@ -493,6 +502,7 @@ function insertImage(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box">
                                             <div class="bubble-info-file">
@@ -505,6 +515,7 @@ function insertImage(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                 <div class="bubble-user-box">
                                     <span class="bubble-user">${user}</span>
+                                    <span class="append-info">${email}</span>
                                 </div>
                                 <div class="bubble-info-box">
                                     <div class="bubble-info-file">
@@ -519,6 +530,7 @@ function insertImage(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                         <div class="bubble-user-box-right">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box-right">
                                             <div class="bubble-info-right-file">
@@ -531,6 +543,7 @@ function insertImage(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
+                                        <span class="append-info">${email}</span>
                                     </div>
                                     <div class="bubble-info-box-right">
                                         <div class="bubble-info-right-file">
@@ -543,7 +556,7 @@ function insertImage(horizontal, vertical, user, sendMsg, file) {
     return $rightChatRoom.children().last();
 }
 
-function insertOthers(horizontal, vertical, user, sendMsg, file) {
+function insertOthers(horizontal, vertical, user, email, sendMsg, file) {
     let fileSize = file.size;
     let convertSize = getConvertSize(file.size);
 
@@ -554,6 +567,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                         <div class="bubble-user-box">
                                             <span class="bubble-user">${user}</span>
+                                            <span class="append-info">${email}</span>
                                         </div>
                                         <div class="bubble-info-box">
                                             <div class="bubble-info-file">
@@ -572,6 +586,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box">
                                         <span class="bubble-user">${user}</span>
+                                        <span class="append-info">${email}</span>
                                     </div>
                                     <div class="bubble-info-box">
                                         <div class="bubble-info-file">
@@ -593,6 +608,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.prepend(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
+                                        <span class="append-info">${email}</span>
                                     </div>
                                     <div class="bubble-info-box-right">
                                         <div class="bubble-info-right-file">
@@ -612,6 +628,7 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
             $rightChatRoom.append(`<div class="bubble" name="${file.name}">
                                     <div class="bubble-user-box-right">
                                         <span class="bubble-user">${user}</span>
+                                        <span class="append-info">${email}</span>
                                     </div>
                                     <div class="bubble-info-box-right">
                                         <div class="bubble-info-right-file">
@@ -632,24 +649,25 @@ function insertOthers(horizontal, vertical, user, sendMsg, file) {
 
 /**
  *
- * @param horizontal:  决定气泡水平显示位置
- * @param vertical:  决定气泡垂直添加方向，从头添加或者从尾部添加
- * @param user:  用户名
- * @param sendMsg:  消息内容
- * @param sendType:  消息类型
- * @param file:  文件对象
  * @return:
  * @Author: Junior
  * @Date: 2023/6/6
+ * @param horizontal
+ * @param vertical
+ * @param user
+ * @param email
+ * @param sendMsg
+ * @param sendType
+ * @param file
  */
-function drawBubble(horizontal, vertical, user, sendMsg, sendType, file) {
+function drawBubble(horizontal, vertical, user, email, sendMsg, sendType, file) {
     let thisBubble;
     if (sendType === 'text') {
-        thisBubble = insertText(horizontal, vertical, user, sendMsg);
+        thisBubble = insertText(horizontal, vertical, user, email, sendMsg);
     }else if (sendType === 'image') {
-        thisBubble = insertImage(horizontal, vertical, user, sendMsg, file);
+        thisBubble = insertImage(horizontal, vertical, user, email, sendMsg, file);
     }else if (sendType === 'others') {
-        thisBubble = insertOthers(horizontal, vertical, user, sendMsg, file)
+        thisBubble = insertOthers(horizontal, vertical, user, email, sendMsg, file)
     }
     return thisBubble;
 }
@@ -718,11 +736,16 @@ function websocketSend(sendMsg, bubble) {
 }
 
 function sendMsg() {
-    let user = $('.user-ip').text();
+    let user = $(".user-name").contents().filter(function () {
+                    return this.nodeType === 3; // 筛选文本节点
+                }).text().trim();
+    let email = $(".user-name").contents().filter(function () {
+                    return this.nodeType === 1; // 筛选element节点
+                }).text().trim();
     let sendType = 'text';
     let sendMsg = $('.text-input').val();
     let file = '';
-    let thisBubble = drawBubble('right', 'end', user, sendMsg, sendType, file)
+    let thisBubble = drawBubble('right', 'end', user, email,  sendMsg, sendType, file)
     $('.text-input').val('');
     // todo 向websocket发送请求
     websocketSend(sendMsg, thisBubble);
@@ -741,12 +764,18 @@ function ajaxFile(formData, bubbles) {
         contentType: false,
         processData: false,
         success: function (res) {
-            if (res.code === 200) {
-                sendSuccess(bubbles[res.data]);
+            if (res.code) {
+                if (res.code === 200) {
+                    sendSuccess(bubbles[res.data]);
+                } else {
+                    sendError(bubbles[res.data]);
+                }
+                copyBubbles.splice(res.data, 1);
             } else {
-                sendError(bubbles[res.data]);
+                // 重定向到登录页
+                window.location.href = '/loginPage';
             }
-            copyBubbles.splice(res.data, 1)
+
         },
         error: function () {
             copyBubbles.forEach(bubble => {
@@ -758,15 +787,20 @@ function ajaxFile(formData, bubbles) {
 
 function sendFile() {
     let index = 0;
-    let user = $('.user-ip').text();
+    let user = $(".user-name").contents().filter(function () {
+        return this.nodeType === 3; // 筛选文本节点
+    }).text().trim();
+    let email = $(".user-name").contents().filter(function () {
+        return this.nodeType === 1; // 筛选element节点
+    }).text().trim();
     let bubbles = [];
     fileArray.forEach(file => {
         const reader = new FileReader();
         reader.onload = function (event) {
             if (file.type.indexOf("image") === 0) {
-                bubbles.push(drawBubble('right', 'end', user, event.target.result, 'image', {name: file.name}));
+                bubbles.push(drawBubble('right', 'end', user, email, event.target.result, 'image', {name: file.name}));
             } else {
-                bubbles.push(drawBubble('right', 'end', user, '../../static/img/unknown.png', 'others', file));
+                bubbles.push(drawBubble('right', 'end', user, email, '../../static/img/unknown.png', 'others', file));
             }
             // 添加正在发送标志
             isSending(bubbles[index]);
@@ -854,13 +888,13 @@ function loadingMsg(formData, dom) {
                 // 添加聊天气泡
                 allData.list.forEach(data => {
                     if (data.msgType === 'text') {
-                        drawBubble(data.position, 'head', data.sender, data.content, data.msgType, '');
+                        drawBubble(data.position, 'head', data.username, data.sender, data.content, data.msgType, '');
                     }else if (data.msgType === 'image') {
                         let fileInfo = {name: data.filename}
-                        drawBubble(data.position, 'head', data.sender, data.content, data.msgType, fileInfo);
+                        drawBubble(data.position, 'head', data.username, data.sender, data.content, data.msgType, fileInfo);
                     }else if (data.msgType === 'others') {
                         let fileInfo = {name: data.filename, size: data.filesize}
-                        drawBubble(data.position, 'head', data.sender, data.content, data.msgType, fileInfo);
+                        drawBubble(data.position, 'head', data.username, data.sender, data.content, data.msgType, fileInfo);
                     }
 
                 });
@@ -909,12 +943,12 @@ function acceptMsg(res) {
     suportNotify(dataJson.sender, dataJson.content, dataJson.type)
     // 绘制聊天气泡
     if (dataJson.type === 'text') {
-        drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, '');
+        drawBubble('left', 'end', dataJson.username, dataJson.sender, dataJson.content, dataJson.type, '');
     }else if (dataJson.type === 'image') {
-        drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, {name:dataJson.name});
+        drawBubble('left', 'end', dataJson.username, dataJson.sender, dataJson.content, dataJson.type, {name:dataJson.name});
     }else if (dataJson.type === 'others') {
         let file = {name: dataJson.name, size: dataJson.size}
-        drawBubble('left', 'end', dataJson.sender, dataJson.content, dataJson.type, file);
+        drawBubble('left', 'end', dataJson.username, dataJson.sender, dataJson.content, dataJson.type, file);
     }
 
     // 添加后滚动条长度

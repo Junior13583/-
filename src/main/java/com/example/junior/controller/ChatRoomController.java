@@ -73,7 +73,7 @@ public class ChatRoomController {
 
     @PostMapping("/getUserInfo")
     @ResponseBody
-    public ResponseDataVO getIp(HttpServletRequest request) {
+    public ResponseDataVO getUserInfo(HttpServletRequest request) {
 
         return chatRoomService.getUserInfo(loginAndRegisterService.jwtInfo(request));
     }

@@ -32,5 +32,6 @@ public class ChatMsg {
      * 附加信息
      */
     private String position;
+    private String username;
 
 }
