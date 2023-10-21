@@ -1,9 +1,12 @@
 # 网页聊天室
 
 #### 网页截图
-![z-first.PNG](z-first.PNG)
-![z-second.PNG](z-second.PNG)
-![z-third.PNG](z-third.PNG)
+- 登录部分预览动图
+![登录部分预览动图](login.gif)
+- 发送文字预览动图
+![发送文字预览动图](text.gif)
+- 发送文件预览动图
+![发送文件预览动图](file.gif)
 
 #### 介绍
 使用springboot+websocket开发，实现多人聊天室。聊天室实现文字和文件发送，同时支持发送失败重试。还能添加不同的聊天室，并在多个聊天室切换聊天
@@ -101,30 +104,6 @@ http {
     }
 
 }
-```
-- 再将 WebSocketConfigurator 类中获取ip改成下面的方式
-```java
-@Override
-    public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-
-        Map<String, Object> attributes = sec.getUserProperties();
-        HttpSession session = (HttpSession) request.getHttpSession();
-        if (session != null) {
-            attributes.put(HTTP_SESSION_ID_ATTR_NAME, session.getId());
-            Enumeration<String> names = session.getAttributeNames();
-            while (names.hasMoreElements()) {
-                String name = names.nextElement();
-
-                // 不使用 nginx 代理时，用下面方式获取ip
-//                String ip = (String) session.getAttribute(name);
-                // 使用 nginx 代理，用下面方式获取ip
-                 String ip = request.getHeaders().get("x-forwarded-for").get(0);
-
-                attributes.put(name, ip);
-            }
-
-        }
-    }
 ```
 
 #### 环境
