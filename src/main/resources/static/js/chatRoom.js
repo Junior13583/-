@@ -93,7 +93,7 @@ $.ajax({
             $('.user-name').html(userInfoHtml);
             wsUrl = res.data.wsUrl;
             res.data.rooms.forEach(data => {
-                let formattedDatetime = data.createTime.replace('T', ' ').substr(0, 16);
+                let formattedDatetime = data.createTime.replace('T', ' ').substr(0, 19);
                 $('.item-box').append(`<div class="chat-item">
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${data.roomName}</div>
@@ -227,7 +227,7 @@ function addChat() {
                                 <div class="chat-del"></div>
                                 <div class="chat-title">${chatRoom}</div>
                                 <div class="chat-bottom">
-                                    <div class="chat-time">${getDateTime(16)}</div>
+                                    <div class="chat-time">${getDateTime(19)}</div>
                                     <div class="chat-num">0 条对话</div>
                                 </div>
                             </div>`);

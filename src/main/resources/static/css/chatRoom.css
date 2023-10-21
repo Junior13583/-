@@ -14,8 +14,8 @@ body {
 }
 
 .container {
-    width: 1024px;
-    height: 640px;
+    width: 1110px;
+    height: 700px;
     border-radius: 20px; /* 圆角 */
     background-color: rgba(255, 255, 255, 0.6);
 }
@@ -35,7 +35,7 @@ body {
 }
 
 .left-panel {
-    width: 320px;
+    width: 360px;
     background-color: #fff0f066;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
@@ -91,6 +91,12 @@ body {
     padding: 3px 5px;
     line-height: 17px;
     text-align: center;
+    height: 17px;
+    margin-right: 10px;
+    max-width: 126px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .user-info{
@@ -103,8 +109,9 @@ body {
 
 .left-chatList {
     width: 100%;
-    height: 488px;
     border-bottom: 1px solid #a5a5a5ed;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 .item-box {
@@ -114,29 +121,25 @@ body {
     width: 100%;
     padding-top: 22px;
     overflow: auto;
-    max-height: 466px;
+    max-height: 526px;
 }
 
 .chat-item-main {
     position: relative;
-    width: 265px;
     height: 82px;
-    margin-left: 24px;
-    margin-bottom: 12px;
     border-radius: 10px;
     background-color: #ffffff7d;
     cursor: pointer;
+    margin: 0 24px 12px 24px;
 }
 
 .chat-item {
     position: relative;
-    width: 265px;
     height: 82px;
-    margin-left: 24px;
-    margin-bottom: 12px;
     border-radius: 10px;
     background-color: #ffffff7d;
     cursor: pointer;
+    margin: 0 24px 12px 24px;
 }
 
 .chat-selected{
@@ -148,7 +151,7 @@ body {
     position: absolute;
     width: 28px;
     height: 28px;
-    margin-left: 247px;
+    margin-left: 295px;
     margin-top: -10px;
     background-image: url(../img/del.png);
     background-repeat: no-repeat;
@@ -167,7 +170,7 @@ body {
 }
 
 .chat-bottom{
-    width: 248px;
+    width: 298px;
     display: flex;
     justify-content: space-between;
     padding-bottom: 17px;
@@ -234,7 +237,7 @@ body {
     position: absolute;
     height: 32px;
     width: 100px;
-    margin-left: 52px;
+    margin-left: 92px;
     margin-top: 13px;
     background-color: #ffffffb3;
     font-size: 14px;
@@ -247,7 +250,7 @@ body {
 }
 
 .right-panel {
-    width: 704px;
+    width: 750px;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     display: flex;
@@ -289,6 +292,7 @@ body {
     display: flex;
     justify-content: flex-end;
     padding-bottom: 5px;
+    margin-right: -10px;
 }
 
 .bubble-user{
@@ -445,11 +449,11 @@ body {
     padding-top: 16px;
     padding-left: 24px;
     padding-bottom: 16px;
-    width: 640px;
+    width: 686px;
 }
 
 .text-input {
-    width: 590px;
+    width: 634px;
     height: 21px;
     line-height: 21px;
     font-size: 14px;
@@ -463,7 +467,7 @@ body {
 }
 
 .file-input {
-    width: 590px;
+    width: 634px;
     height: 125px;
     display: flex;
     overflow-x: auto;

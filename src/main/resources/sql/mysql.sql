@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80028
 File Encoding         : 65001
 
-Date: 2023-07-31 14:06:22
+Date: 2023-10-20 17:34:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,23 @@ CREATE TABLE `chat_msg` (
                             `filesize` int DEFAULT NULL,
                             `sendTime` datetime NOT NULL,
                             PRIMARY KEY (`msgId`)
-) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
+
+-- ----------------------------
+-- Records of chat_msg
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for chat_user
+-- ----------------------------
+DROP TABLE IF EXISTS `chat_user`;
+CREATE TABLE `chat_user` (
+                             `id` int NOT NULL AUTO_INCREMENT,
+                             `name` varchar(255) NOT NULL,
+                             `email` varchar(255) NOT NULL,
+                             `password` varchar(1000) NOT NULL,
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
 
 
 -- ----------------------------
@@ -41,7 +57,7 @@ CREATE TABLE `room` (
                         `roomName` varchar(255) NOT NULL,
                         `creator` varchar(255) NOT NULL,
                         PRIMARY KEY (`roomId`)
-) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of room
@@ -54,10 +70,10 @@ INSERT INTO `room` VALUES ('1', 'Junior 的聊天室', 'admin');
 DROP TABLE IF EXISTS `user_room`;
 CREATE TABLE `user_room` (
                              `id` int NOT NULL AUTO_INCREMENT,
-                             `userIp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                             `userEmail` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
                              `roomId` int NOT NULL,
                              `createTime` datetime NOT NULL,
                              PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
 
 
