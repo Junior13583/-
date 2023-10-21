@@ -7,6 +7,9 @@ var sendFileArray = [];
 var msgPageIndex = 1;
 var wsUrl = "";
 
+var msgCount = 0;
+var selectedChatRoomDom = null;
+
 function getDateTime(len=19) {
     let curDate = new Date();  //获取当前时间
     let year = curDate.getFullYear();  //获取年份
@@ -123,9 +126,14 @@ $(document).on('mouseleave', '.chat-item', function () {
 });
 
 function selectChatRoom(selectDom) {
+    // 记录当前选中的聊天室，用于后续更新消息数量
+    selectedChatRoomDom = selectDom;
+    // 显示右边聊天框
     $('.right-panel').css('visibility', 'visible')
     $('.chat-selected').removeClass('chat-selected');
+    // 添加点击被选中状态
     $(selectDom).addClass('chat-selected');
+    // 获取当前聊天室标题
     let chatTitle = $(selectDom).find('.chat-title').text();
     // TODO 选择聊天室
     $('.right-title').html(chatTitle);
@@ -427,12 +435,20 @@ function getConvertSize(fileSize) {
  * @param msg
  */
 function getConvertMsg(msg) {
-    let urlRegex = /(http:\/\/|https:\/\/)([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/gi;
+    let urlRegex = /(http:\/\/|https:\/\/|www\.)([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/gi;
     let htmlRegex = /<(?!\/?a(?=>|\s.*>))([^\s<>]+)[^<>]*>/gi;
 
     // 将消息中http连接转换为 <a> 标签
     let replaceUrlText = msg.replace(urlRegex, function(url) {
-        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        let httpRegex = /^(http:\/\/|https:\/\/)/;
+        let wholeUrl = "";
+        if (!httpRegex.test(url)) {
+            // 如果不是以http://或https://开头，则在最前面添加http://
+            wholeUrl = 'http://' + url;
+        }else {
+            wholeUrl = url;
+        }
+        return '<a href="' + wholeUrl + '" target="_blank">' + url + '</a>';
     });
 
     // 将除了a标签的其他所有html标签转化为实体
@@ -752,6 +768,8 @@ $(document).on('click', '.bubble-error', function () {
 function websocketSend(sendMsg, bubble) {
     if (ws.readyState === 1) {
         ws.send(sendMsg);
+        msgCount += 1;
+        $(selectedChatRoomDom).find('.chat-num').text(`${msgCount} 条对话`);
     } else {
         sendError(bubble)
     }
@@ -789,6 +807,8 @@ function ajaxFile(formData, bubbles) {
             if (res.code) {
                 if (res.code === 200) {
                     sendSuccess(bubbles[res.data]);
+                    msgCount += 1;
+                    $(selectedChatRoomDom).find('.chat-num').text(`${msgCount} 条对话`);
                 } else {
                     sendError(bubbles[res.data]);
                 }
@@ -906,6 +926,8 @@ function loadingMsg(formData, dom) {
                 let allData = res.data;
                 if (dom != null) {
                     $(dom).text(allData.total + ' 条对话');
+                    // 获取当前聊天室消息数量
+                    msgCount = parseInt(allData.total);
                 }
                 // 添加聊天气泡
                 allData.list.forEach(data => {
