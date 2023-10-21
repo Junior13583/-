@@ -983,6 +983,9 @@ function acceptMsg(res) {
     let dataJson = JSON.parse(res).data;
     // 添加前滚动条位置
     let beforeScrollLength = $('.right-chatRoom').scrollTop();
+    // 更新消息数量
+    msgCount++;
+    $(selectedChatRoomDom).find('.chat-num').text(`${msgCount} 条对话`);
     // 通知提示
     suportNotify(dataJson.sender, dataJson.content, dataJson.type)
     // 绘制聊天气泡
