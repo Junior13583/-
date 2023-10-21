@@ -71,7 +71,7 @@ http {
         ssl_certificate      D:\mkcert\10.197.24.79.pem;
         ssl_certificate_key  D:\mkcert\10.197.24.79-key.pem;
 
-        ssl_session_timeout  5m;
+        ssl_session_timeout  30m;
 
         ssl_prefer_server_ciphers On;
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;

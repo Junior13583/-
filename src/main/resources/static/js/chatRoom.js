@@ -304,12 +304,6 @@ $('#file-message').on('change', function () {
 });
 
 $('.right-panel').on("dragenter", function (event) {
-    event.preventDefault();
-
-});
-
-$('.right-panel').on("dragover", function (event) {
-    event.preventDefault();
     $('.left-overlay').css('display', 'block');
     // 判断radio是否处于选中状态
     if ($('#text-message').prop('checked')) {
@@ -323,10 +317,18 @@ $('.right-panel').on("dragover", function (event) {
         $('.message-input').prepend(fileInput)
 
     }
+
 });
 
-$('.right-panel').on("dragleave", function () {
-    $('.left-overlay').css('display', 'none');
+$('.right-panel').on("dragover", function (event) {
+    event.preventDefault();
+
+});
+
+$('.right-panel').on("dragleave", function (event) {
+    if (!$(event.relatedTarget).closest('.right-panel').length) {
+        $('.left-overlay').css('display', 'none');
+    }
 });
 
 $('.right-panel').on("drop", function (event) {
